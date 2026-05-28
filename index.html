@@ -1,0 +1,3842 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png">
+  <meta name="theme-color" content="#1e40af">
+  <title>Chatbot Koco Acreimex</title>
+
+<style>
+    :root {
+      --primary: #1e40af;
+      --primary-dark: #1e3a8a;
+      --accent: #2563eb;
+      --bg-gradient: radial-gradient(circle at top right, #2563eb, #1e40af, #111827);
+      --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      overflow: hidden;
+      background: #111827;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+   /* --- LOGIN REFORZADO Y MÁS GRANDE --- */
+#pantalla-login {
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  height: 100dvh; 
+  width: 100vw;
+  background: var(--bg-gradient);
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  z-index: 10000;
+  padding: 20px;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.98);
+  padding: 60px 45px; /* Más espacio interno */
+  border-radius: 32px; /* Bordes más suaves y modernos */
+  width: 100%;
+  max-width: 480px; /* Tarjeta más ancha (antes 400px) */
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.login-card img {
+  width: 110px; /* Logo más grande (antes 90px) */
+  height: auto;
+  margin-bottom: 25px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+}
+
+.login-card h1 {
+  margin: 0 0 15px 0;
+  color: var(--primary-dark);
+  font-size: 32px; /* Título más grande (antes 26px) */
+  font-weight: 850;
+  letter-spacing: -0.03em;
+}
+
+.login-card p {
+  margin-bottom: 40px;
+  color: #64748b;
+  font-size: 17px; /* Texto más legible (antes 15px) */
+  line-height: 1.6;
+}
+
+/* --- INPUTS REFORZADOS --- */
+.input-group { 
+  margin-bottom: 20px; 
+  text-align: left; 
+}
+
+.login-card input {
+  width: 100%;
+  padding: 18px 22px; /* Inputs más altos para mejor toque */
+  border: 2px solid #e2e8f0; /* Borde un poco más grueso */
+  border-radius: 16px; /* Esquinas más redondeadas */
+  font-size: 18px; /* Letra más grande al escribir */
+  background-color: #f8fafc;
+  color: #1e293b;
+  transition: all 0.25s ease;
+}
+
+.login-card input:focus {
+  border-color: var(--accent);
+  background-color: #fff;
+  box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.15);
+  outline: none;
+}
+
+/* --- BOTÓN PREMIUM XL --- */
+.btn-entrar {
+  width: 100%;
+  padding: 20px; /* Botón mucho más grande */
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-weight: 800;
+  font-size: 18px; /* Texto del botón más grande */
+  cursor: pointer;
+  margin-top: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 15px rgba(30, 64, 175, 0.3);
+}
+
+.btn-entrar:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(30, 64, 175, 0.4);
+}
+
+.btn-entrar:active { 
+  transform: translateY(0); 
+}
+/* --- ESTILO DE TABLAS PROFESIONAL  --- */
+/* --- ESTILO PARA TABLAS DE ALTA DENSIDAD (7 COLUMNAS) --- */
+table {
+    width: 100% !important;
+    table-layout: fixed !important; /* Obligatorio para evitar el scroll lateral */
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+th, td {
+    border: 1px solid #000;
+    padding: 3px 0.5px !important; /* Espacio casi nulo para ganar cada píxel */
+    text-align: center;
+    vertical-align: middle;
+    /* Reducimos a 8px o 9px para que 7 columnas entren en 400px */
+    font-size: 8.5px !important; 
+    line-height: 1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+th {
+    background-color: #1e40af;
+    color: white;
+    font-weight: bold;
+}
+
+/* --- AJUSTE DINÁMICO DE COLUMNAS --- */
+@media screen and (max-width: 600px) {
+    /* Si la tabla tiene 7 columnas, cada una ocupa el 14.2% */
+    .bot-message td, .bot-message th {
+        width: 14.28% !important; 
+    }
+    
+    /* Si el texto es un número con muchos decimales, lo compactamos */
+    td {
+        letter-spacing: -0.5px; 
+    }
+}
+   /* Header del Chat */
+    .chat-header { 
+      background: white; 
+      color: var(--primary-dark); 
+      padding: 15px 25px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+      border-bottom: 1px solid #e2e8f0;
+    }
+ /* CONTENEDOR PRINCIPAL PWA */
+    #contenido-pwa {
+      display: none;
+      width: 100vw;
+      height: 100dvh;
+    }
+
+    .wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-container {
+      background: var(--card-bg);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+    }
+
+    /* HEADER AJUSTADO */
+    .chat-header {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .header-info h1 { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.2; }
+    .header-info p { margin: 0; font-size: 11px; opacity: 0.8; }
+
+  .chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    /* Reducimos de 18px a 8px en los lados para ganar espacio para la tabla */
+    padding: 15px 8px; 
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+    .message {
+      padding: 10px 14px;
+      border-radius: 15px;
+      max-width: 95%;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .bot-message { background: #e3f2fd; align-self: flex-start; border-bottom-left-radius: 2px; }
+    .user-message { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+
+    /* ÁREA DE ENTRADA */
+    .chat-input-container {
+      padding: 10px 15px;
+      background: white;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding-bottom: env(safe-area-inset-bottom); /* Soporte para iPhone notch */
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 25px;
+      border: 1px solid #e2e8f0;
+      outline: none;
+      font-size: 15px;
+      background: #f8f9fa;
+    }
+
+    .send-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 10px;
+      padding: 5px;
+      color: #94a3b8;
+      background: #fff;
+    }
+
+</style>
+</head>
+
+<body>
+
+<div id="pantalla-login">
+  <div class="login-card">
+    <img src="icon-192.png" alt="Acreimex">
+    <h1>Koco Acreimex</h1>
+    <p>Inicia sesión para continuar</p>
+    
+    <input type="text" id="loginEmail" placeholder="Usuario o Correo" autocomplete="username">
+    <div style="height: 10px;"></div>
+    <input type="password" id="loginPass" placeholder="Contraseña" autocomplete="current-password">
+    
+    <button class="btn-entrar" id="btnEntrar" onclick="simularLogin()">Iniciar Sesión</button>
+    
+    <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+      <button class="btn-biometrico" id="btnHuellaLogin" onclick="procesarLoginHuella()" style="background-color: #0284c7; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span>☝️</span> Entrar con Huella Digital
+      </button>
+      
+      <button class="btn-vincular" id="btnHuellaVincular" onclick="procesarRegistroHuella()" style="background-color: transparent; color: #64748b; border: 1px dashed #cbd5e1; padding: 8px; border-radius: 6px; font-size: 13px; cursor: pointer;">
+        ⚙️ Vincular mi huella a este dispositivo
+      </button>
+    </div>
+    <p style="margin-top: 25px; font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">
+      Sistema propiedad de Créditos Solidarios
+    </p>
+  </div>
+</div>
+<div id="contenido-pwa">
+  <div class="wrap">
+    <div class="chat-container">
+      
+      <header class="chat-header">
+        <div class="header-info">
+          <h1>Asistente Créditos Solidarios</h1>
+          <p>KOCO SOLIDARIO</p>BENVENIDOS
+
+        </div>
+
+        <div class="header-right">
+          <button class="btn-salir" id="btnSalir" onclick="location.reload()">Salir</button>
+          <div class="quote-container">
+             <p id="frase-imponente">
+               💖🤝 Tu trabajo abre oportunidades donde antes solo había sueños. 🌱💫
+             </p>
+          </div>
+        </div>
+      </header>
+
+      <div class="chat-messages" id="chatMessages" aria-live="polite">
+            </div>
+
+      <div class="chat-input-container">
+        <input id="messageInput" class="chat-input" type="text" placeholder="Escribe aquí...">
+        <button id="sendBtn" class="send-btn">➤</button>
+      </div>
+
+      <div class="footer">Información confiable • TU AMIGO SOLIDARIO</div>
+    </div>
+  </div>
+</div>
+ 
+<script>
+    function simularLogin() {
+      const email = document.getElementById('loginEmail').value;
+      const pass = document.getElementById('loginPass').value;
+      
+      if(email !== "" && pass !== "") {
+        // Transición suave
+        const login = document.getElementById('pantalla-login');
+        login.style.transition = "opacity 0.5s";
+        login.style.opacity = "0";
+        
+        setTimeout(() => {
+            login.style.display = 'none';
+            document.getElementById('contenido-pwa').style.display = 'block';
+        }, 500);
+      } else {
+        alert("Por favor, llena los campos");
+      }
+    }
+</script>
+<script>
+/* --- SISTEMA GLOBAL DE SEGUIMIENTO Y DESPEDIDA KOCO --- */
+let timerSeguimiento;
+let timerInactividad;
+
+// 1. Motor de Mensajes Aleatorios por Horario
+function obtenerDespedidaFinal() {
+    const h = new Date().getHours();
+    const morning = ["🌅 Fue un gusto atenderte,que  tengas  un bendecido dia🤝"];
+    const afternoon = ["☀️ Fue un gusto atenderte,que  tengas  un  bendecido dia 🤝"];
+    const night = ["🌙Fue un gusto atenderte,que  tengas un  bendecido dia 🤝"];
+    let messages = (h >= 6 && h < 12) ? morning : (h >= 12 && h < 18) ? afternoon : night;
+    return messages[Math.floor(Math.random() * messages.length)];
+}
+
+// 2. Función de Inyección de Mensajes (Bot)
+function botEscribeMensaje(texto) {
+    const container = document.querySelector('.chat-messages');
+    if(!container) return;
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'message bot-message';
+    msgDiv.innerHTML = texto;
+    container.appendChild(msgDiv);
+    container.scrollTop = container.scrollHeight;
+}
+
+// 3. Activador de Seguimiento (Pregunta "¿Algo más?")
+function activarSeguimientoGlobal() {
+    clearTimeout(timerSeguimiento);
+    clearTimeout(timerInactividad);
+
+    timerSeguimiento = setTimeout(() => {
+        botEscribeMensaje("¿Hay algo más en lo que te pueda servir? 😊");
+
+    }, 40000); // 40 segundos después de cualquier respuesta del bot
+}
+
+// 4. Interceptor de Respuestas del Usuario (Detección de "No/Gracias")
+function procesarEntradaUsuario(valor) {
+    const lower = valor.toLowerCase().trim();
+    const despedidas = ["no", "gracias", "nada", "ninguna", "n", "todo bien", "adios", "eso es todo", "no gracias"];
+
+    if (despedidas.some(neg => lower === neg || lower.includes(neg))) {
+        clearTimeout(timerSeguimiento);
+        clearTimeout(timerInactividad);
+        
+        // Despedida inmediata con leve retraso natural
+        setTimeout(() => botEscribeMensaje(obtenerDespedidaFinal()), 600);
+        return true; // Es una despedida
+    }
+    
+    // Si no es despedida, limpiamos timers para esperar la nueva respuesta del bot
+    clearTimeout(timerSeguimiento);
+    clearTimeout(timerInactividad);
+    return false; 
+}
+
+/* --- MONITORES DE EVENTOS --- */
+
+// Vigilante de Mensajes del Bot (MutationObserver)
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+            if (node.classList && node.classList.contains('bot-message')) {
+                const texto = node.innerText || "";
+                // Evitar que el bot reaccione a sus propias preguntas de seguimiento o despedidas
+                const esSeguimiento = texto.includes("¿Hay algo más");
+                const esDespedida = texto.includes("Gracias por") || texto.includes("gusto ayudarte") || texto.includes("buen día") || texto.includes("buena tarde") || texto.includes("noches");
+
+                if (!esSeguimiento && !esDespedida) {
+                    activarSeguimientoGlobal();
+                }
+            }
+        });
+    });
+});
+
+const chatContainer = document.querySelector('.chat-messages');
+if (chatContainer) observer.observe(chatContainer, { childList: true });
+
+// Listeners de Interfaz (Click y Enter)
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.querySelector('.send-btn');
+    const input = document.querySelector('.chat-input');
+
+    if (btn && input) {
+        const manejarEnvio = () => {
+            const valor = input.value;
+            procesarEntradaUsuario(valor);
+        };
+
+        btn.addEventListener('click', manejarEnvio);
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') manejarEnvio();
+        });
+    }
+});
+</script>
+</body>
+<script>
+    const defaultConfig = {
+      background_color: "#0052CC",
+      secondary_surface_color: "#FFFFFF",
+      text_color: "#1f2937",
+      primary_action_color: "#0052CC",
+      secondary_action_color: "#E6F2FF",
+      font_family: "Segoe UI",
+      font_size: 16,
+      chat_title: "Asistente de la Coordinación de créditos solidarios",
+      chat_subtitle: "Grupal — TU AMIGO SOLIDARIO",
+      header_message: "💖🤝 Tu trabajo abre oportunidades donde antes solo había sueños. 🌱💫",
+      footer_text: "Información actualizada y confiable • TU AMIGO SOLIDARIO",
+      input_placeholder: "Escribe tu pregunta..."
+    };
+
+    const keywords = {
+  ingresos: ['ingresos','comprobantes','ventas','evidencias','flujo','utilidad','actualización','actualizacion','estado de resultados','ganancias','facturación','corte de caja','ingreso mensual','ingreso semanal','capacidad de pago','balance','movimientos','soporte de ingresos','actividad económica','ventas diarias','registro de ventas','flujo de efectivo','utilidades netas','comprobación'],
+
+  igualacion: ['igualacion','igualación','montos','nivelar','ajuste','correspondencia','equiparar','homologar','balancear','regular','redistribuir','adecuación','alinear montos','ajuste de crédito','nivelación','equilibrar','igualar','actualizar montos','asignación','asignación de ciclo','monto por ciclo','ajuste grupal','asignacion de ciclo','monto similar','monto equivalente','recalcular','70000','mayor a 70000','superiores a 70000','monto superior','monto mayor','monto máximo','monto autorizado','monto permitido','monto solicitado','monto aprobado','monto total','incremento de monto','incremento hasta 100000','tope de crédito','límite de crédito','límite máximo','capacidad máxima','crédito alto','capital','importe','cantidad','valor del crédito','nivel de crédito','rango de crédito','monto trabajado'],
+
+  domicilio: ['vivienda','rentado','domicilio familiar','domicilio propio','vivienda rentada o prestada','domicilio prestado','identificar','rentada','diferenciar'],
+
+  renovacion: ['renovación','renovacion','anticipada','reactivar','renovar crédito','nuevo ciclo','continuidad','siguiente crédito','refinanciar','reenganche','renovación grupal','renovación individual','crédito recurrente','nuevo préstamo','recredito','reapertura','renovación anticipada','extensión de crédito','seguimiento','historial vigente','crédito activo','recontratación','nuevo desembolso','revisión de crédito'],
+
+  adicional: ['adicional','extra','complementario','programa','crédito adicional','segundo crédito','crédito paralelo','crédito extra','financiamiento adicional','monto adicional','apoyo extra','crédito complementario','extensión','refuerzo financiero','capital adicional','ampliación','nuevo apoyo','crédito alterno','adicional grupal','crédito secundario','incremento adicional','línea adicional','financiamiento extra','apoyo económico','monto complementario'],
+
+  coordinacion: ['producto','productos','mixto','crédito mixto','poder mujer','mujer','crédito mujer','preferente','crédito preferente','consumo','crédito de consumo','simulador','simular','simulación','tabla','plan','esquema','modalidad','tipo de crédito','segmento','clasificación','configuración','condiciones','parámetros','estructura','programa','política'],
+
+  nuevos: ['nuevos','grupo','nuevo grupo','integrantes nuevos','alta de grupo','formación de grupo','grupo nuevo','primer crédito','garantia','nuevo ingreso','alta','registro de grupo','cobertura de crédito','grupo solidario','integración','requisitos de grupo','grupo inicial','creación de grupo','nuevo ciclo','primer desembolso','seguro de crédito','grupo reciente','socios nuevos','nuevo financiamiento'],
+
+  sucursal: ['sucursal','cambio','traslado','movimiento','reubicación','cambio de sucursal','transferencia','reasignación','oficina','agencia','punto de atención','dependencia','gestión en sucursal','cambio operativo','sucursal origen','sucursal destino','atención','ubicación','oficina regional','gestión local','movimiento de expediente','cambio administrativo','reasignar','nueva sucursal'],
+
+  multas: ['multas','penalizaciones','recargos','sanciones','castigo','mora','intereses moratorios','cargo','penalidad','incumplimiento','atraso','falta de pago','multa por atraso','penalización','penalizacion','adeudo','deuda','intereses','cargo adicional','castigo financiero','penalización por atraso','omisión','mora crediticia'],
+
+  expedientes: ['expediente','nuevo expediente','crear expediente','registro','archivo','carpeta','expediente grupal','expediente individual','alta de expediente','integración','requisitos','control documental','archivo digital','validación','revisión de expediente','apertura de expediente','carga documental','fotografía grupal','expediente de crédito'],
+
+  generalidades: ['fuera de sucursal','campo','fuera','entrega en campo'],
+
+desembolso: ['desembolso', 'proceso de desembolso', 'actividades previas', 'impresión de documentos', 'documentos base', 'ajustes en sistema', 'revisión de firmas', 'entrega de plan', 'control de pagos'],
+
+  esquema: [   
+    'esquema',
+    'esquema de evaluación',
+    'evaluación asesores',
+    'evaluacion asesores',
+    'incentivo',
+    'incentivos',
+    'bono',
+    'bono mensual',
+    'bono extraordinario',
+    'parametros',
+    'parámetros',
+    'condiciones incentivo',
+    'indicadores'
+  ],
+
+  recuperacion: ['recuperacion','cobranza','gestion de recuperacion','etapa preventiva','etapa administrativa','etapa extrajudicial','mora','cartera vencida','atraso','gestor de recuperacion','recuperación','gestiones'],
+
+  comprobante: ['recibo','domicilio','cfe','predial','comprobante de domicilio','direccion','dirección','hogar','casa','residencia','luz','fachada','evidencia fotografica'],
+
+  adulto: ['mayor de 70 años','mayores de 70 años','adulto mayor','adultos mayores','70 años','tercera edad','edad avanzada','persona grande','personas grandes','abuelito','abuelita','mayor de 70','arriba de 70 años','superan los 70','rebasan los 70'],
+
+  incremento: ['incremento','socios antiguos','historial','sin crédito vigente','inactivos','reactivación','cliente antiguo','buen historial','historial positivo','socios acreimex','clientes recurrentes','reactivar socio','nuevo crédito','incremento por historial','historial de pagos','clientes inactivos','reincorporación','regreso a crédito','evaluación histórica','monto previo','capacidad de pago'],
+
+  saldos: ['saldos','insolutos','renovación de saldos','capital pendiente','saldo capital','adeudo','crédito vencido','crédito en atraso','regularización','saldos vencidos','renovar saldo','liquidación parcial','capital insoluto','pago pendiente','saldo grupal','saldo adicional','restructura','reprogramación','intención de pago'],
+
+  recurso: ['comprobación','aplicación','comprobacion',,'supervision','supervisión','aplicacion','recurso','comprobar'],
+
+  impulso: ['impulso','solidario','nuevo producto'],
+
+  si: ['si','sí','claro','por supuesto','adelante','ok','vale'],
+
+  no: ['no','nope','negativo','no gracias','paso']
+};
+    const farewellKeywords = ["adios","adiós","bye","hasta luego","gracias","chao","es todo"];
+    
+    let conversationContext = null;
+
+    function addMessage(content, isUser = false) {
+  const messagesContainer = document.getElementById("chatMessages");
+  const messageDiv = document.createElement("div");
+  messageDiv.className = "message " + (isUser ? "user-message" : "bot-message");
+  
+  // Configuración de margen para que el header azul no tape el título
+  messageDiv.style.scrollMarginTop = "160px"; 
+  
+  if (typeof content === 'string') {
+    messageDiv.textContent = content;
+  } else {
+    messageDiv.appendChild(content);
+  }
+  
+  messagesContainer.appendChild(messageDiv);
+
+  if (isUser) {
+    // Si el usuario escribe, bajamos normalmente al final
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  } else {
+    // Si es el BOT, usamos scrollIntoView para anclarnos al TÍTULO
+    setTimeout(() => {
+      messageDiv.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' // Esto evita que la pantalla se vaya hasta el fondo
+      });
+    }, 150); 
+  }
+}
+    function createTable(headers, rows) {
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+      
+      headers.forEach(h => {
+        const th = document.createElement("th");
+        th.textContent = h;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+      
+      const tbody = document.createElement("tbody");
+      rows.forEach(rowData => {
+        const tr = document.createElement("tr");
+        rowData.forEach(cellData => {
+          const td = document.createElement("td");
+          td.textContent = cellData;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      
+      return table;
+    }
+
+    function includesKeyword(message, list) {
+      return list.some(kw => message.includes(kw));
+    }
+
+    function getResponse(input) {
+      const lower = input.toLowerCase().trim();
+
+      // --- BLOQUE DE CONTROL DE DESPEDIDA (Prioridad 1) ---
+      const despedidasEfectivas = ["no", "gracias", "nada", "ninguna", "n", "todo bien", "eso es todo", "no gracias", "adios", "adiós"];
+      if (despedidasEfectivas.some(neg => lower === neg || lower === neg + ".")) {
+          clearTimeout(timerSeguimiento);
+          clearTimeout(timerInactividad);
+          return { type: 'farewell', content: obtenerDespedidaFinal() };
+      }
+
+
+if (conversationContext && includesKeyword(lower, keywords.si)) {
+  if (conversationContext === 'impulso_pregunta') {
+    conversationContext = null;
+
+    const container = document.createElement("div");
+
+    // ESTILO GLOBAL DE LA TARJETA (FONDO CREMA Y LÍNEA AZUL cielo)
+    container.style.backgroundColor = "#fdf5e8";
+    container.style.borderLeft = "6px solid #6495ED";
+    container.style.borderTop = "1px solid #e0e0e0";
+    container.style.borderRight = "1px solid #e0e0e0";
+    container.style.borderBottom = "1px solid #e0e0e0";
+    container.style.borderRadius = "10px";
+    container.style.padding = "25px";
+    container.style.margin = "15px 0";
+    container.style.fontFamily = "Arial, sans-serif";
+    container.style.boxShadow = "0 2px 5px rgba(0,0,0,0.05)";
+
+    // TÍTULO PRINCIPAL
+    const title = document.createElement("h2");
+    title.innerHTML = "POLÍTICAS DEL CRÉDITO IMPULSO SOLIDARIO ACR";
+    title.style.color = "#0d214a";
+    title.style.fontSize = "18px";
+    title.style.marginTop = "0";
+    title.style.marginBottom = "20px";
+    title.style.fontWeight = "bold";
+    title.style.textTransform = "uppercase";
+    container.appendChild(title);
+
+    const contentDiv = document.createElement("div");
+
+    const politicas = [
+      { texto: "<strong>Historial grupal o captación:</strong> Contar con historial grupal en Cooperativa Acreimex o que los socios hayan sido captados a través de una plática informativa para crédito en modalidad de grupo." },
+      { texto: "<strong>Nivel de riesgo:</strong> Únicamente se podrá otorgar a socios clasificados con nivel de riesgo <strong>bajo o medio</strong> de acuerdo con el análisis del reporte de la Sociedad de Información Crediticia (SIC)." },
+      { texto: "<strong>Socios sin historial grupal:</strong> Para socios sin historial grupal en Cooperativa Acreimex el tipo de vivienda deberá ser <strong>propio o familiar</strong>." },
+      { texto: "<strong>Socios con historial (mínimo 3 créditos pagados):</strong> Para socios con historial en Cooperativa Acreimex con un mínimo de <strong>3 créditos pagados</strong> en modalidad grupal y que, de acuerdo con las necesidades del socio, requiera un plazo o monto superior al otorgado en el crédito grupal o que por situaciones internas del grupo no se cuente con el mínimo de los 3 integrantes requeridos en la mesa directiva, debiendo cumplir con lo siguiente:<br><span style='margin-left: 15px; display: block;'>• <strong>a)</strong> No haber reflejado atrasos de más de 1 cuota en su último crédito grupal.</span><span style='margin-left: 15px; display: block;'>• <strong>b)</strong> Firma de un <strong>aval</strong>, no deberá ser familiar del acreditado ni compartir el mismo domicilio.</span>" },
+      { texto: "<strong>Tasa para socios con historial:</strong> Para socios con historial en Cooperativa Acreimex la tasa de interés será con relación al monto solicitado." },
+      { texto: "<strong>Socios prospectados sin historial:</strong> Socios sin historial grupal en Cooperativa Acreimex que hayan sido prospectados por el asesor de créditos con la intención de solicitar un crédito en modalidad grupal y que de acuerdo con el análisis realizado a todos los integrantes no se haya podido formalizar la solicitud, deberá cumplir con lo siguiente:<br><span style='margin-left: 15px; display: block;'>• <strong>a)</strong> El crédito se podrá otorgar a un mínimo de <strong>dos</strong> y hasta <strong>cuatro socios</strong> los cuales deberán ser obligados solidarios entre sí.</span><span style='margin-left: 15px; display: block;'>• <strong>b)</strong> Los plazos, periodicidad y día de pago deberán ser los mismos para ambos acreditados.</span><span style='margin-left: 15px; display: block;'>• <strong>c)</strong> Los montos para otorgar serán de acuerdo con la tabla de ciclos del producto y deberán ser otorgados con el mismo plazo y periodicidad de su origen.</span>" },
+      { texto: "<strong>Tasa para socios sin historial:</strong> Para socios sin historial grupal en Cooperativa Acreimex la tasa de interés será con base a la tabla de ciclos del producto." }
+    ];
+
+    politicas.forEach((p, index) => {
+      const pDiv = document.createElement("div");
+      pDiv.style.display = "flex";
+      pDiv.style.marginBottom = "12px";
+      pDiv.style.alignItems = "flex-start";
+      pDiv.innerHTML = `
+        <span style="color: #000; font-weight: bold; min-width: 25px;">${index + 1}.</span>
+        <span style="font-size: 14.5px; color: #333; line-height: 1.5;">${p.texto}</span>
+      `;
+      contentDiv.appendChild(pDiv);
+    });
+
+    container.appendChild(contentDiv);
+
+    // PIE DE PÁGINA
+    
+    return { type: 'html', content: container };
+  }
+}
+
+// Detectar pregunta sobre Impulso Solidario
+const impulsoDirecto = lower.includes('impulso') && lower.includes('solidario');
+const esCalculadora = lower.includes('calculadora') || lower.includes('simular');
+
+if (impulsoDirecto && !esCalculadora) {
+  conversationContext = 'impulso_pregunta';
+
+  const data = {
+    titulo: "IMPULSO SOLIDARIO ACR",
+    intro: "El producto <strong>IMPULSO SOLIDARIO ACR</strong> está diseñado para socios con historial grupal en la cooperativa y socios nuevos clasificados con nivel de riesgo bajo o medio que provengan de una plática informativa para crédito en modalidad grupal, de la cual no se haya podido formalizar la solicitud debido a que algunos prospectos no clasificaron para el crédito (no sujetos o riesgo alto).",
+    pregunta: "1. ¿En qué supuestos le podemos realizar trámite con este producto a un socio con historial grupal en la cooperativa?",
+    secciones: [
+      {
+        encabezado: "SOCIOS CON HISTORIAL GRUPAL EN ACR:",
+        items: [
+          { letra: "•", texto: "Se puede ofertar a socios de grupos que se desintegran y que no completan los 3 integrantes de la mesa directiva, es decir: <strong>Cuando únicamente quedan 2 integrantes y no logran conseguir a más integrantes o estos no clasifican para el crédito</strong>." },
+          { letra: "•", texto: "Cuando un socio pide salirse de su grupo por conflictos internos o para solicitar un crédito con un monto o plazo mayor, siempre y cuando no se rebasen los 12 meses y los $100,000.00." }
+        ],
+        objetivo: "Que nosotros les sigamos otorgando el financiamiento para <strong>que tu cartera de crédito no pierda valor y socios</strong> por grupos desintegrados o por salidas de socios que quieren tener su propio crédito por un plazo o monto mayor."
+      },
+      {
+        encabezado: "SOCIOS NUEVOS:",
+        items: [
+          { letra: "•", texto: "Se puede otorgar a personas que estaban interesadas en formar un crédito grupal, pero <strong>que no lograron formalizar debido a que algunos interesados no pasaron el filtro de la consulta de buró de crédito</strong>." },
+          { letra: "•", texto: "<strong>Aplica</strong> cuando únicamente 4 prospectos o menos son considerados sujetos de crédito con nivel de riesgo bajo o medio." },
+          { letra: "•", texto: "En casos en los que 5 prospectos o más pasan el filtro como sujetos a crédito con nivel de riesgo bajo o medio, <strong>el trámite se debe realizar con un producto en modalidad grupal</strong>." }
+        ],
+        objetivo: "Que de las pláticas informativas que realices <strong>en las que no se hayan completado los integrantes</strong> para formar su grupo, <strong>tengas la oportunidad de otorgarle crédito a los prospectos que si pasaron el filtro de buró de crédito...</strong>"
+      }
+    ]
+  };
+
+  const seccionesHTML = data.secciones.map((sec, index) => `
+    <div style="margin-top: ${index === 0 ? '0' : '25px'};">
+      <p style="margin-bottom: 12px; font-weight: bold; color: #1f3c73; font-size: 15.5px;">
+        ${sec.encabezado}
+      </p>
+      
+      <div style="padding-left: 5px;">
+        ${sec.items.map(item => `
+          <div style="display: flex; margin-bottom: 10px; align-items: flex-start;">
+            <span style="color: #000000; font-weight: bold; min-width: 25px;">${item.letra}</span>
+            <span style="font-size: 14.5px; color: #333; line-height: 1.5;">${item.texto}</span>
+          </div>
+        `).join('')}
+      </div>
+
+      <div style="margin: 15px 0; padding: 15px; border-radius: 8px; background-color: #fffbcc; border: 1px solid #f0e68c;">
+        <p style="margin: 0; font-size: 14px; line-height: 1.4; color: #000000;">
+          <strong style="color: #f28511;">Objetivo principal:</strong> <em>${sec.objetivo}</em>
+        </p>
+      </div>
+    </div>
+  `).join('');
+
+  const cardContainer = document.createElement("div");
+  cardContainer.style.backgroundColor = "#fdf5e8"; // Fondo Crema
+  cardContainer.style.borderLeft = "6px solid #6495ED"; // Línea lateral Azul
+  cardContainer.style.borderTop = "1px solid #e0e0e0";
+  cardContainer.style.borderRight = "1px solid #e0e0e0";
+  cardContainer.style.borderBottom = "1px solid #e0e0e0";
+  cardContainer.style.borderRadius = "10px";
+  cardContainer.style.padding = "25px";
+  cardContainer.style.margin = "15px 0";
+  cardContainer.style.fontFamily = "Arial, sans-serif";
+
+  cardContainer.innerHTML = `
+    <h2 style="color: #0d214a; font-size: 19px; margin-top: 0; margin-bottom: 20px; font-weight: bold; text-transform: uppercase;">
+      ${data.titulo}
+    </h2>
+    <p style="font-size: 14.5px; color: #333; line-height: 1.6; margin-bottom: 20px;">${data.intro}</p>
+    <p style="font-weight: bold; color: #1f3c73; font-size: 15.5px; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px;">
+      ${data.pregunta}
+    </p>
+    ${seccionesHTML}
+    <p style="margin-top: 25px; font-weight: bold; color: #1f3c73; text-align: justify; font-size: 15px;">
+      ¿Deseas conocer las políticas para acceder a este crédito?
+    </p>
+  `;
+
+  return { type: 'html', content: cardContainer };
+}
+
+if (keywords.ingresos.some(kw => lower.includes(kw))) {
+  const data = {
+    secciones: [
+      {
+        tituloSeccion: "COMPROBANTE DE INGRESOS",
+        items: [] // Se deja vacío si solo es el separador visual
+      },
+      {
+        encabezado: "1. Recibos de nómina con periodicidad de pago:",
+        items: [
+          { letra: "a)", texto: "<b>Semanal:</b> Los últimos cuatro recibos con vigencia de 60 días naturales (referencia: último día del periodo)." },
+          { letra: "b)", texto: "<b>Decenal:</b> Los últimos tres recibos con vigencia de 60 días naturales (referencia: último día del periodo)." },
+          { letra: "c)", texto: "<b>Catorcenal o quincenal:</b> Los últimos dos recibos con vigencia de 60 días naturales." },
+          { letra: "d)", texto: "<b>Mensual:</b> Los dos últimos recibos con una vigencia de hasta 90 días naturales." }
+        ],
+        nota: "Recibos timbrados con QR deben ser validados en el portal del SAT, verificando autenticidad y vigencia."
+      },
+      {
+        encabezado: "2. Documentos de pensión (IMSS, ISSSTE o Extranjera):",
+        items: [
+          { letra: "a)", texto: "Presentar recibos de los dos últimos meses, con una vigencia de hasta 90 días naturales." }
+        ]
+      },
+      {
+        encabezado: "3. Constancias de ingresos (Original):",
+        items: [
+          { letra: "•", texto: "Vigencia de 60 días naturales. No debe ser redactada a mano." },
+          { letra: "•", texto: "Debe incluir: Nombre/firma del patrón, lugar/fecha, dirección, antigüedad, puesto, teléfono, percepciones y periodicidad." }
+        ],
+        nota: "El personal designado debe corroborar autenticidad, plasmar firma y fecha de cotejo. Colaboradores Acreimex se acepta digital sin verificar."
+      },
+      {
+        encabezado: "4. Estados de cuenta o movimientos bancarios:",
+        items: [
+          { letra: "a)", texto: "Últimos dos meses según fecha de corte, con vigencia de 90 días naturales." }
+        ],
+        nota: "La capacidad de pago se determina de forma mensual, NO por la suma de todos los depósitos."
+      },
+      {
+        tituloSeccion: "5. SUPUESTOS DE ACTUALIZACIÓN DEL COMPROBANTE:",
+        items: [
+          { letra: "a)", texto: "Actualizar evidencias si las deudas en el SIC aumentan más del <b>25%</b> respecto al ciclo anterior<strong>(del mismo tipo de crédito trabajado).</strong>" },
+          { letra: "b)", texto: "Cuando el monto solicitado rebase los <b>$5,000.00</b> de aumento vs el monto máximo previo." },
+          { letra: "c)", texto: "Actualización obligatoria anual a partir de la fecha atestada por el personal." }
+        ],
+        nota: "Para grupos con pago puntual no aplica inciso A y B salvo causas justificadas."
+      },
+      {
+        encabezado: "6. Créditos adicionales:",
+        items: [
+          { letra: "a)", texto: "Sólo cuando el crédito adicional anterior tenga más de 1 cuota en atraso." }
+        ]
+      }
+    ]
+  };
+
+  const seccionesHTML = data.secciones.map((sec, index) => {
+    const esTituloEspecial = !!sec.tituloSeccion;
+    
+    return `
+    <div style="margin-top: ${index === 0 ? '0' : '20px'}; border-bottom: ${index === data.secciones.length - 1 || esTituloEspecial ? 'none' : '1px dashed #d0d0d0'}; padding-bottom: ${esTituloEspecial ? '0' : '15px'};">
+      
+      ${esTituloEspecial ? 
+        `<div style="background-color: #1f3c73; padding: 10px; border-radius: 4px; margin-bottom: ${sec.items && sec.items.length > 0 ? '12px' : '0'};">
+          <p style="margin: 0; font-weight: bold; color: #ffffff; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; text-align: justify;">
+            ${sec.tituloSeccion}
+          </p>
+        </div>` :
+        `<p style="margin-bottom: 12px; font-weight: bold; color: #1f3c73; font-size: 14.5px;">
+          ${sec.encabezado}
+        </p>`
+      }
+      
+      ${sec.items && sec.items.length > 0 ? `
+      <div style="padding-left: 5px;">
+        ${sec.items.map(item => `
+          <div style="display: flex; margin-bottom: 6px; align-items: flex-start;">
+            <span style="color: #000000; font-weight: bold; min-width: 25px;">${item.letra}</span>
+            <span style="font-size: 13.5px; color: #333; line-height: 1.4;">${item.texto}</span>
+          </div>
+        `).join('')}
+      </div>` : ''}
+
+      ${sec.nota ? `
+        <div style="margin: 8px 0; padding: 10px; border-radius: 6px; background-color: #FFFBCC; border: 1px solid #e6db55;">
+          <p style="margin: 0; font-size: 12.5px; line-height: 1.4; color: #444;">
+            <strong style="color: #d97706;">Importante:</strong> <em>${sec.nota}</em>
+          </p>
+        </div>
+      ` : ''}
+    </div>
+  `}).join('');
+
+  const cardContainer = document.createElement("div");
+  cardContainer.style.backgroundColor = "#fdf5e8"; 
+  cardContainer.style.borderLeft = "6px solid #6495ED"; 
+  cardContainer.style.borderRadius = "8px";
+  cardContainer.style.padding = "20px";
+  cardContainer.style.margin = "15px 0";
+  cardContainer.style.fontFamily = "Arial, sans-serif";
+
+  cardContainer.innerHTML = `
+    <div style="margin-bottom: 10px;">
+      ${seccionesHTML}
+    </div>
+  `;
+
+  return { type: 'html', content: cardContainer };
+}
+
+if (keywords.esquema.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- ESTILOS DE TABLA (CENTRADO Y NEGRITAS) ---
+  const tableStyle = `width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; margin-top:10px; border:1px solid #000; background-color: white;`;
+  const headerStyle = `background:#1f3c73; color:white; border:1px solid #000; padding:10px; text-align:center; font-weight:bold; text-transform:uppercase;`;
+  const cellStyle = `border:1px solid #000; padding:8px; text-align:center; font-weight:bold; color:#333;`;
+
+  // --- FUNCIÓN DE CONSTRUCCIÓN DE TARJETAS (ESTILO INGRESOS) ---
+  const crearCardEvaluacion = (titulo, contenidoHtml) => {
+    const card = document.createElement("div");
+    card.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    if (titulo) {
+      card.innerHTML = `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    } else {
+      card.innerHTML = '';
+    }
+    card.innerHTML += `<div style="font-size: 14px; color: #333; line-height: 1.6;">${contenidoHtml}</div>`;
+    return card;
+  };
+
+  // TÍTULO PRINCIPAL (Diseño de Cinta Corporativa)
+const mainTitle = document.createElement("h2");
+mainTitle.style.cssText = `
+  background-color: #1f3c73; 
+  color: #ffffff; 
+  font-size: 18px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  margin-bottom: 25px; 
+  padding: 15px; 
+  border-radius: 4px; 
+  text-align: justify;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  line-height: 1.3;
+`;
+mainTitle.textContent = "Esquema de Evaluación para Asesores de Crédito y Recuperación Solidarios";
+container.appendChild(mainTitle);
+  // 1. OBJETIVO
+  container.appendChild(crearCardEvaluacion("OBJETIVO", `
+    <p>Con el objetivo de ofrecer un servicio extraordinario a nuestros socios, se ajustan las políticas del esquema de evaluación para los Asesores de Crédito y Recuperación Solidarios, con la finalidad de mejorar la administración de la cartera de crédito y su desempeño en las sucursales, el cual entrará en vigor a partir del 01 de noviembre de 2025 bajo las siguientes:</p>
+  `));
+
+  // 2. CONDICIONES
+  container.appendChild(crearCardEvaluacion("🔹 CONDICIONES PARA PARTICIPAR EN EL INCENTIVO", `
+    <div style="padding-left: 5px;">
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold;">a)</span><span>Haber cumplido el periodo de prueba.</span></div>
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold;">b)</span><span>Administrar como mínimo la cantidad de $1,300,001.00.</span></div>
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold;">c)</span><span>Administrar como mínimo la cantidad de 90 socios.</span></div>
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold;">d)</span><span>Tener un índice de cartera vencida (4 cuotas acumuladas o más) igual o menor al 5% del total de cartera administrada.</span></div>
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold;">e)</span><span>Tener un índice de cartera vigente en 0 cuotas vencidas igual o mayor al 85% del total de cartera administrada.</span></div>
+    </div>
+  `));
+
+  // 3. PARÁMETROS A EVALUAR
+  container.appendChild(crearCardEvaluacion("🔹 PARÁMETROS A EVALUAR", `
+    <p>El incentivo se conforma de los siguientes parámetros:</p>
+    <table style="${tableStyle}">
+      <thead>
+        <tr><th colspan="3" style="${headerStyle}">PARÁMETROS DEL INCENTIVO</th></tr>
+        <tr style="background:#2c4c8a; color:white;">
+          <th style="border:1px solid #000; padding:8px;">PARÁMETROS</th>
+          <th style="border:1px solid #000; padding:8px;">CONDICIÓN</th>
+          <th style="border:1px solid #000; padding:8px;">MONTO DEL INCENTIVO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="${cellStyle}">Cartera vigente en cero cuotas vencidas igual o mayor al 90%.</td><td style="${cellStyle}">Binario (sí/no)</td><td style="${cellStyle}">$1,000.00</td></tr>
+        <tr><td style="${cellStyle}">Cartera vencida desde cuatro cuotas en adelante igual o menor a 5%.</td><td style="${cellStyle}">Binario (sí/no)</td><td style="${cellStyle}">$1,000.00</td></tr>
+        <tr><td style="${cellStyle}">Número de créditos y monto de créditos desembolsados.</td><td style="${cellStyle}">De acuerdo con el tabulador</td><td style="${cellStyle}">Hasta $2,000.00</td></tr>
+        <tr><td style="${cellStyle}">Acreditados nuevos.</td><td style="${cellStyle}">De acuerdo con el tabulador</td><td style="${cellStyle}">Hasta $1,500.00</td></tr>
+        <tr><td style="${cellStyle}">Crecimiento de la cartera total administrada en comparación con el cierre de ejercicio anterior.</td><td style="${cellStyle}">De acuerdo con el tabulador</td><td style="${cellStyle}">Hasta $1,500.00</td></tr>
+        <tr style="background:#f2f2f2;"><td colspan="2" style="${cellStyle} text-align:right;">TOTAL</td><td style="${cellStyle}">$7,000.00</td></tr>
+      </tbody>
+    </table>
+  `));
+
+  // 4. CRÉDITOS Y MONTOS
+  container.appendChild(crearCardEvaluacion("🔹 NÚMERO DE CRÉDITOS DESEMBOLSADOS Y MONTOS DESEMBOLSADOS.", `
+    <table style="${tableStyle}">
+      <thead>
+        <tr style="${headerStyle}">
+          <th style="border:1px solid #000; padding:8px;">NÚMERO DE CRÉDITOS DESEMBOLSADOS EN EL MES</th>
+          <th style="border:1px solid #000; padding:8px;">MONTO GANADO</th>
+          <th style="border:1px solid #000; padding:8px;">MONTO DE CRÉDITOS DESEMBOLSADOS EN EL MES</th>
+          <th style="border:1px solid #000; padding:8px;">MONTO GANADO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="${cellStyle}">De 26 a 35</td><td style="${cellStyle}">$200.00</td><td style="${cellStyle}">$500,000.00 - $1,000,000.00</td><td style="${cellStyle}">$200.00</td></tr>
+        <tr><td style="${cellStyle}">De 36 a 45</td><td style="${cellStyle}">$350.00</td><td style="${cellStyle}">$1,000,000.01 - $1,500,000.00</td><td style="${cellStyle}">$350.00</td></tr>
+        <tr><td style="${cellStyle}">De 46 a 55</td><td style="${cellStyle}">$500.00</td><td style="${cellStyle}">$1,500,001.00 - $2,000,000.00</td><td style="${cellStyle}">$500.00</td></tr>
+        <tr><td style="${cellStyle}">De 56 a 65</td><td style="${cellStyle}">$650.00</td><td style="${cellStyle}">$2,000,001.00 - $2,500,000.00</td><td style="${cellStyle}">$650.00</td></tr>
+        <tr><td style="${cellStyle}">De 65 a 75</td><td style="${cellStyle}">$800.00</td><td style="${cellStyle}">$2,500,001.00 - $3,000,001.00</td><td style="${cellStyle}">$800.00</td></tr>
+        <tr><td style="${cellStyle}">De 75 o más</td><td style="${cellStyle}">$1,000.00</td><td style="${cellStyle}">MÁS DE $3,000,001.00</td><td style="${cellStyle}">$1,000.00</td></tr>
+      </tbody>
+    </table>
+  `));
+
+  // 5. ACREDITADOS NUEVOS
+  container.appendChild(crearCardEvaluacion("🔹 ACREDITADOS NUEVOS", `
+    <table style="${tableStyle}">
+      <thead><tr style="${headerStyle}"><th style="border:1px solid #000; padding:8px;">NÚMERO REQUERIDO DE ACREDITADOS NUEVOS</th><th style="border:1px solid #000; padding:8px;">MONTO GANADO</th></tr></thead>
+      <tbody>
+        <tr><td style="${cellStyle}">De 4 a 5</td><td style="${cellStyle}">$350.00</td></tr>
+        <tr><td style="${cellStyle}">De 6 a 10</td><td style="${cellStyle}">$800.00</td></tr>
+        <tr><td style="${cellStyle}">De 11 a 13</td><td style="${cellStyle}">$1,200.00</td></tr>
+        <tr><td style="${cellStyle}">14 o más</td><td style="${cellStyle}">$1,500.00</td></tr>
+      </tbody>
+    </table>
+  `));
+
+  // 6. CRECIMIENTO CARTERA
+  container.appendChild(crearCardEvaluacion("🔹 CRECIMIENTO DE LA CARTERA TOTAL ADMINISTRADA", `
+    <table style="${tableStyle}">
+      <thead><tr style="${headerStyle}"><th style="border:1px solid #000; padding:8px;">MONTO DE CRECIMIENTO DE CARTERA AL CIERRE DE MES EN COMPARACIÓN CON EL CIERRE DEL EJERCICIO ANTERIOR</th><th style="border:1px solid #000; padding:8px;">MONTO GANADO</th></tr></thead>
+      <tbody>
+        <tr><td style="${cellStyle}">$250,000 HASTA $500,000.00</td><td style="${cellStyle}">$300.00</td></tr>
+        <tr><td style="${cellStyle}">$500,000.01 HASTA $750,000.00</td><td style="${cellStyle}">$700.00</td></tr>
+        <tr><td style="${cellStyle}">$750,000.01 HASTA $1,000,000.00</td><td style="${cellStyle}">$1,100.00</td></tr>
+        <tr><td style="${cellStyle}">MAYOR A $1,000,000.00</td><td style="${cellStyle}">$1,500.00</td></tr>
+      </tbody>
+    </table>
+  `));
+
+  // 7. BONO MENSUAL
+  container.appendChild(crearCardEvaluacion("BONO MENSUAL POR LA CANTIDAD DE HASTA $1,000.00.", `
+    <p>Adicional a los valores de incentivo generados, los asesores podrán ser acreedores al "BONO EXTRAORDINARIO MENSUAL”, el cual será depositado en la primera catorcena del mes posterior al cierre de mes evaluado en el que hayan cumplido con lo siguiente:</p>
+    <div style="padding-left: 5px; margin-bottom:15px;">
+      <div style="display:flex; margin-bottom:5px;"><span style="min-width:30px; font-weight:bold;">a)</span><span>Cartera administrada a partir de $4,000,000.00.</span></div>
+      <div style="display:flex; margin-bottom:5px;"><span style="min-width:30px; font-weight:bold;">b)</span><span>Porcentaje de 0 cuotas vencidas igual o mayor al 95%.</span></div>
+      <div style="display:flex; margin-bottom:5px;"><span style="min-width:30px; font-weight:bold;">c)</span><span>Porcentaje de cartera vencida (4 cuotas acumuladas o más) igual o menor al 2%.</span></div>
+      <div style="display:flex; margin-bottom:5px;"><span style="min-width:30px; font-weight:bold;">d)</span><span>Crecimiento en la cartera administrada.</span></div>
+    </div>
+    <table style="${tableStyle}">
+      <thead><tr style="${headerStyle}"><th style="border:1px solid #000; padding:8px;">Crecimiento</th><th style="border:1px solid #000; padding:8px;">Monto</th></tr></thead>
+      <tbody>
+        <tr><td style="${cellStyle}">$150,000,001 - $350,000,000</td><td style="${cellStyle}">$200.00</td></tr>
+        <tr><td style="${cellStyle}">$350,000,000.01 - $600,000,000</td><td style="${cellStyle}">$650.00</td></tr>
+        <tr><td style="${cellStyle}">Mayor a $600,000,001</td><td style="${cellStyle}">$1,000,000.00</td></tr>
+      </tbody>
+    </table>
+  `));
+
+  // 8. CARTERA INTERMEDIA
+  container.appendChild(crearCardEvaluacion("INCENTIVO PARA ASESORES CON CARTERA ADMINISTRADA ENTRE $300,001.00 y $1,300,000.00.", `
+    <p>Los asesores que administren una cartera de crédito entre estos valores, se les otorgará un incentivo con base al crecimiento generado de acuerdo con la siguiente tabla y cumplimiento de los incisos correspondientes:</p>
+    <table style="${tableStyle}">
+      <thead><tr style="${headerStyle}"><th style="border:1px solid #000; padding:8px;">MONTO DE CRECIMIENTO DE CARTERA AL CIERRE DE MES EN COMPARACIÓN CON EL CIERRE DEL EJERCICIO ANTERIOR</th><th style="border:1px solid #000; padding:8px;">MONTO GANADO</th></tr></thead>
+      <tbody>
+        <tr><td style="${cellStyle}">$250,000 HASTA $500,000.00</td><td style="${cellStyle}">$300.00</td></tr>
+        <tr><td style="${cellStyle}">$500,000.01 HASTA $750,000.00</td><td style="${cellStyle}">$700.00</td></tr>
+        <tr><td style="${cellStyle}">$750,000.01 HASTA $1,000,000.00</td><td style="${cellStyle}">$1,100.00</td></tr>
+        <tr><td style="${cellStyle}">MAYOR A $1,000,001.00</td><td style="${cellStyle}">$1,500.00</td></tr>
+      </tbody>
+    </table>
+  `));
+
+  return { type: "html", content: container };
+}
+if (keywords.igualacion.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+  container.style.fontFamily = "Arial, sans-serif";
+
+  // --- 1. TÍTULO PRINCIPAL ---
+  const mainTitle = document.createElement("h2");
+  mainTitle.style.cssText = `
+    background-color: #1f3c73; 
+    color: #ffffff; 
+    font-size: 19px; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    margin-bottom: 20px; 
+    padding: 15px; 
+    border-radius: 4px; 
+    text-align: JUSTIFY;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    line-height: 1.3;
+  `;
+  mainTitle.textContent = "IGUALACIÓN DE MONTOS";
+  container.appendChild(mainTitle);
+
+  // --- 2. FUNCIÓN PARA BLOQUES REUTILIZABLES ---
+  const crearBloque = (titulo, contenidoHtml, colorBorde = "#6495ED") => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border: 1px solid #e0e0e0;
+      border-left: 6px solid ${colorBorde};
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #333; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+// --- 3. SECCIÓN: IGUALACIÓN DE MONTOS ---
+  const contenidoIgualacion = `
+    <p style="font-size: 14px; color: #1f3c73; font-weight: bold; margin-bottom: 15px;">
+      Cuando un socio solicite un monto mayor al correspondiente de acuerdo con la tabla de ciclos:
+    </p>
+    <div style="padding-left: 5px;">
+      <div style="display: flex; margin-bottom: 10px;"><span style="min-width: 25px; font-weight: bold;">a)</span> <span>El monto máximo a solicitar debe aparecer en la columna <strong>Crédito Máximo</strong>del Buró de Crédito o en la evidencia de crédito grupal.</span></div>
+      <div style="display: flex; margin-bottom: 10px;"><span style="min-width: 25px; font-weight: bold;">b)</span> <span>La cuenta de referencia debe ser de un crédito grupal, y el ciclo mas reciente se encuentre pagado o estar en sus últimos 4 pagos según su plan de pagos.</span></div>
+      <div style="display: flex; margin-bottom: 10px;"><span style="min-width: 25px; font-weight: bold;">c)</span> <span>La cuenta de referencia debe estar calificada con <strong>MOP 01</strong>, o justificar que se encuentra al corriente.</span></div>
+      <div style="display: flex; margin-bottom: 10px;"><span style="min-width: 25px; font-weight: bold;">d)</span> <span>El ciclo más reciente no debe rebasar más de un año desde la fecha del último pago hasta la fecha de consulta.</span></div>
+    </div>
+  `;
+  container.appendChild(crearBloque("Igualación de Montos", contenidoIgualacion));
+
+  // --- 4. SECCIÓN: MONTOS SUPERIORES A $70,000 ---
+  const contenidoMontos = `
+    <p style="font-weight: bold; margin-bottom: 10px;">Requisitos para montos superiores a $70,000.00:</p>
+    <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
+       <li style="line-height: 1.8;">
+        Debe contar con un historial en el reporte de buró de al menos tres créditos iguales o superiores al monto a solicitar, calificados con <strong>MOP 01</strong>, o bien, el monto asignado deberá corresponder al número de ciclo actual.
+      </li>
+          </ul>
+  `;
+  container.appendChild(crearBloque("Igualación  de Montos Superiores a $70,000.00", contenidoMontos));
+
+  // --- 5. NOTAS FINALES (RESTRICCIONES) ---
+  const note = document.createElement("div");
+  note.style.cssText = "padding: 15px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; font-size: 13px; color: #444;";
+  note.innerHTML = `
+    <strong style="color: #f28511; font-size: 14px;">⚠️ NOTAS IMPORTANTES:</strong>
+    <ul style="margin: 8px 0 0 20px;">
+	<li>No aplica para créditos  en <STRONG> modalidad (GRUPO) </STRONG> con menos de 5 integrantes.</li>      
+      <li>No aplica para socios con <strong>vivienda prestada o rentada</strong>.</li>
+      <li><strong><MARK>Igualación $70,000.00:</MARK></strong>Los socios con historial grupal en la cooperativa que hayan pagado tres ciclos con un monto de $70,000.00 sin atrasos podrán incrementar su monto hasta <strong>$100,000.00</strong>.</li>
+    </ul>
+  `;
+  container.appendChild(note);
+
+  return { type: 'html', content: container };
+}
+// ===============================
+// FUNCIONES AUXILIARES
+// ===============================
+
+function createCard(title, contentHTML, color = "#f59e0b") {
+  const card = document.createElement("div");
+  card.style.padding = "14px";
+  card.style.background = "#fff7ed";
+  card.style.borderRadius = "8px";
+  card.style.marginBottom = "12px";
+  card.style.borderLeft = `4px solid ${color}`;
+
+  card.innerHTML = `
+    <div style="font-weight:bold; margin-bottom:8px; color:#92400e;">
+      ${title}
+    </div>
+    <div style="font-size:14px; line-height:1.5;">
+      ${contentHTML}
+    </div>
+  `;
+
+  return card;
+}
+
+function createAdminTable() {
+  const wrapper = document.createElement("div");
+
+  wrapper.innerHTML = `
+    <table style="width:100%; border-collapse:collapse; font-family:Arial; font-size:8px;  text-align: justify;">
+      <thead>
+        <tr style="background:#1f3c73; color:white;">
+          <th colspan="6" style="border:1px solid #000; padding:6px;">
+            ETAPA DE COBRANZA ADMINISTRATIVA<br>
+            CRÉDITOS GRUPALES SEMANALES, CATORCENALES Y QUINCENALES
+          </th>
+        </tr>
+	<tr style="background:#2f5aa8; color:white;">
+          <th style="border:1px solid #000; padding:6px;">CUOTAS EN ATRASO</th>
+          <th style="border:1px solid #000; padding:6px;">LLAMADAS, SMS, WHATSAPP</th>
+          <th style="border:1px solid #000; padding:6px;">FORMATO CARTA INVITACIÓN</th>
+          <th style="border:1px solid #000; padding:6px;">FORMATO REQUERIMIENTO DE PAGO</th>
+          <th style="border:1px solid #000; padding:6px;">FOTOGRAFÍAS GEO</th>
+          <th style="border:1px solid #000; padding:6px;">NOTIFICACIÓN</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="border:1px solid #000; padding:6px;">CUOTA 1</td>
+          <td style="border:1px solid #000;">2</td>
+          <td style="border:1px solid #000;">1</td>
+          <td style="border:1px solid #000;">1</td>
+          <td style="border:1px solid #000;"></td>
+          <td style="border:1px solid #000;"></td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #000; padding:6px;">CUOTA 2</td>
+          <td style="border:1px solid #000;">2</td>
+          <td style="border:1px solid #000;"></td>
+          <td style="border:1px solid #000;">2</td>
+          <td style="border:1px solid #000;">2</td>
+          <td style="border:1px solid #000;"></td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #000; padding:6px;">CUOTA 3</td>
+          <td style="border:1px solid #000;">2</td>
+          <td style="border:1px solid #000;"></td>
+          <td style="border:1px solid #000;">1</td>
+          <td style="border:1px solid #000;">2</td>
+          <td style="border:1px solid #000;">1</td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+
+  return wrapper;
+}
+
+// ===============================
+// BLOQUE PRINCIPAL
+// ===============================
+   
+if (keywords.recuperacion.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- ESTILOS DE TABLA Y CONTENEDORES ---
+  const tableStyle = `width:100%; border-collapse:collapse; font-family:Arial; font-size:12px; margin-top:10px; border:1px solid #000; background-color: white;`;
+  const headerStyle = `background:#1f3c73; color:white; border:1px solid #000; padding:8px; text-align:center; font-weight:bold;`;
+  const cellStyle = `border:1px solid #000; padding:6px; text-align:center; font-weight:normal; color:#333;`;
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueRecuperacion = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #333; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+  // TÍTULO PRINCIPAL (AZUL MARINO)
+  const mainTitle = document.createElement("h2");
+  mainTitle.style.cssText = "color: #1f3c73; font-size: 19px; font-weight: bold; text-transform: uppercase; margin-bottom: 20px;";
+  mainTitle.textContent = "GESTIÓN DE RECUPERACIÓN(COBRANZA).";
+  container.appendChild(mainTitle);
+
+  // 1. OBJETIVO (TEXTO EN NEGRITA NEGRA)
+  container.appendChild(crearBloqueRecuperacion("OBJETIVO.", `
+    <p style="font-weight: bold; margin-bottom: 15px; color: #000;">Con la finalidad de generar empatía y compromiso moral con los integrantes del grupo, el Asesor de Crédito y Recuperación Grupal cuidará en todo momento el buen desempeño de sus actividades, priorizando las siguientes:</p>
+    <div style="padding-left: 5px;">
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold; color:#000;">a)</span><span style="font-weight:normal; color:#000;">Reuniones informativas con los grupos.</span></div>
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold; color:#000;">b)</span><span style="font-weight:normal; color:#000;">La integración de los expedientes de manera ágil.</span></div>
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold; color:#000;">c)</span><span style="font-weight:normal; color:#000;">Disminuir los tiempos de entrega del recurso.</span></div>
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold; color:#000;">d)</span><span style="font-weight:normal; color:#000;">Responsabilizar a los integrantes del grupo del compromiso solidario.</span></div>
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold; color:#000;">e)</span><span style="font-weight:normal; color:#000;">Incentivar el ahorro.</span></div>
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold; color:#000;">f)</span><span style="font-weight:normal; color:#000;">Obligar el pago puntual, generando la cultura de pago.</span></div>
+    </div>
+  `));
+
+  // 2. ETAPA PREVENTIVA
+  container.appendChild(crearBloqueRecuperacion("🔹 Recuperación Etapa Preventiva.", `
+    <p style="font-weight: normal; color:#000;">El Asesor de Crédito y Recuperación Grupal deberá realizar llamadas telefónicas, envío de mensajes de texto SMS o WhatsApp a todos los integrantes del grupo, mencionando la fecha próxima de pago, debiendo realizar esta actividad cuando el crédito se encuentre en 0 días y con al menos dos días de anticipación a su fecha de pago.</p>
+  `));
+
+  // 3. ETAPA ADMINISTRATIVA
+  const tablaAdmin = `
+    <p style="font-weight: normal; margin-bottom:10px; color:#000;">En todas y cada una de las etapas gestionadas por el Asesor de Crédito y Recuperación Grupal, está obligado a digitalizar las evidencias de las gestiones realizadas en el sistema informático y de manera física al expediente de crédito grupal cuando aplique, siendo requerido al menos lo siguiente:</p>
+    <table style="${tableStyle}">
+      <thead>
+        <tr style="${headerStyle}"><th colspan="6">ETAPA DE COBRANZA ADMINISTRATIVA<br>CRÉDITOS GRUPALES SEMANALES, CATORCENALES Y QUINCENALES</th></tr>
+        <tr style="background:#2f5aa8; color:white;">
+          <th style="border:1px solid #000; padding:6px;">CUOTAS EN ATRASO</th>
+          <th style="border:1px solid #000; padding:6px;">LLAMADAS, SMS, WHATSAPP</th>
+          <th style="border:1px solid #000; padding:6px;">FORMATO CARTA INVITACIÓN</th>
+          <th style="border:1px solid #000; padding:6px;">FORMATO REQUERIMIENTO DE PAGO</th>
+          <th style="border:1px solid #000; padding:6px;">FOTOGRAFÍAS GEO</th>
+          <th style="border:1px solid #000; padding:6px;">NOTIFICACIÓN</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="${cellStyle}">CUOTA 1</td><td style="${cellStyle}">2</td><td style="${cellStyle}">1</td><td style="${cellStyle}">1</td><td style="${cellStyle}"></td><td style="${cellStyle}"></td></tr>
+        <tr><td style="${cellStyle}">CUOTA 2</td><td style="${cellStyle}">2</td><td style="${cellStyle}"></td><td style="${cellStyle}">2</td><td style="${cellStyle}">2</td><td style="${cellStyle}"></td></tr>
+        <tr><td style="${cellStyle}">CUOTA 3</td><td style="${cellStyle}">2</td><td style="${cellStyle}"></td><td style="${cellStyle}">1</td><td style="${cellStyle}">2</td><td style="${cellStyle}">1</td></tr>
+      </tbody>
+    </table>
+  `;
+  container.appendChild(crearBloqueRecuperacion("🔹 Recuperación en Etapa Administrativa.", tablaAdmin));
+
+  // 4. RECUPERACIÓN EXTRAJUDICIAL (CON MARK)
+  container.appendChild(crearBloqueRecuperacion("<mark>🔹 Recuperación Extrajudicial.</mark>", `
+    <p style="font-weight: bold; color: #1f3c73; margin-bottom: 10px;">Comprende de la quinta cuota hasta que el crédito cuente con 89 días de mora.</p>
+    <div style="padding-left: 5px;">
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">a)</span><span style="font-weight:normal; color:#000;">En esta etapa el Gerente de Sucursal, Asesor de Crédito y/o Gestor de Recuperación, intensificarán las gestiones de cobranza a los socios, realizándolas de manera permanente evitando el pase a cartera vencida del crédito.</span></div>
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">b)</span><span style="font-weight:normal; color:#000;">De no tener resultado en la acción anterior, el Gestor de Recuperación seguirá realizando la recuperación de los créditos de manera individual, exigiendo la liquidación total del crédito o, en su caso, realizar un convenio de pago que no exceda un plazo máximo de 3 días hábiles, caso contrario solicitará la autorización a la Coordinación de Recuperación Extrajudicial.</span></div>
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">c)</span><span style="font-weight:normal; color:#000;">El Asesor de Crédito y Recuperación Grupal, Gestor de Recuperación y/o Gerente de Sucursal en todo momento evitarán, por los medios necesarios y a su alcance, que el o los créditos asignados pasen a cartera vencida.</span></div>
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">d)</span><span style="font-weight:normal; color:#000;">Durante esta etapa se podrán utilizar las garantías líquidas para cubrir la primera cuota vencida del crédito, previa autorización de la Gerencia de Recuperación.</span></div>
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">e)</span><span style="font-weight:normal; color:#000;">En esta etapa se podrán aceptar bienes en dación en pago respetando en todo momento lo establecido en el presente manual, para liquidación o abono parcial del crédito grupal o disposición.</span></div>
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">f)</span><span style="font-weight:normal; color:#000;">En esta etapa se podrán utilizar los documentos “Requerimiento de pago extrajudicial” o “Requerimiento de pago extrajudicial grupal individual”.</span></div>
+    </div>
+  `));
+
+  // 5. VENCIMIENTO DEL CRÉDITO (CON MARK)
+  container.appendChild(crearBloqueRecuperacion("<mark>🔹 Vencimiento del crédito.</mark>", `
+    <p style="font-weight: bold; color: #1f3c73; margin-bottom: 10px;">Comprende de 90 a 150 días de mora.</p>
+    <div style="padding-left: 5px;">
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">a)</span><span style="font-weight:normal; color:#000;">cuando el Gestor de Recuperación identifique en esta etapa, grupos que tengan la voluntad de liquidar sus adeudos pendientes y estos no sean atribuibles a la negativa de pago, propondrán la renovación del crédito al Gerente de la sucursal, cumpliendo con las políticas establecidas en el Manual de Crédito aplicando el pago sostenido del crédito.</span></div>
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">b)</span><span style="font-weight:normal; color:#000;">Podrá realizar un convenio de pago que no exceda un plazo máximo de tres días hábiles, analizando el saldo total del crédito, en caso de convenir a un mayor plazo solicitará la autorización a la Coordinación de Recuperación Extrajudicial.</span></div>
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">c)</span><span style="font-weight:normal; color:#000;">En esta etapa se podrán utilizar el documento “Requerimiento previo a juicio grupal".</span></div>
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">d)</span><span style="font-weight:normal; color:#000;">En esta etapa se podrán aceptar bienes en dación en pago respetando en todo momento lo establecido en el presente manual, para liquidación o abono parcial del crédito grupal o disposición.</span></div>
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">e)</span><span style="font-weight:normal; color:#000;">Cuando se hayan agotado todas las gestiones de cobranza el Gestor de Recuperación, Gerente de Sucursal o Coordinador de Recuperación Extrajudicial, con base al análisis de la situación actual del acreditado, podrá proponer alguna estrategia para la liquidación, cancelación o renuncia del cobro del crédito grupal o disposición, apegándose en todo momento a los lineamientos establecidos en el presente manual.</span></div>
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">f)</span><span style="font-weight:normal; color:#000;">Una vez cumplidos los 150 días de morosidad y la cuenta no tenga movimientos de depósitos y/o pagos, el Gestor de Recuperación (cuando aplique) podrá dictaminar la incobrabilidad de recuperación del crédito, por la falta de solvencia económica, localización de los socios, deudores solidarios, etc., siempre y cuando cumpla con todas las evidencias de cobranza digitalizadas en el sistema informático, el Coordinador de Recuperación Extrajudicial solicitará al Gestor de Recuperación, Gerente de Sucursal, Subgerente de Sucursal o Ejecutivo de Servicios el dictamen de cada integrante del grupo.</span></div>
+      <div style="display:flex; margin-bottom:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">g)</span><div style="font-weight:normal; color:#000;">Para turnar a Recuperación Judicial considerar:
+        <ul style="margin: 5px 0 0 0; padding-left: 20px; color: #000;">
+          <li>1. Saldo capital del crédito grupal (igual o mayor a $25,000.00).</li>
+          <li>2. Localización del socio y/o deudores solidarios.</li>
+          <li>3. Solvencia económica de socio y/o deudores solidarios.</li>
+          <li>4. Tipo de garantías que respaldan el crédito.</li>
+          <li>5. Existencia de bienes susceptibles de embargo.</li>
+        </ul>
+      </div></div>
+      <div style="display:flex; margin-top:10px;"><span style="min-width:30px; font-weight:bold; color:#000;">h)</span><span style="font-weight:normal; color:#000;">El dictamen deberá digitalizarse e integrarse al expediente físico.</span></div>
+    </div>
+  `));
+
+  return { type: "html", content: container };
+}
+
+if (keywords.renovacion.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueRenovacion = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+  // TÍTULO PRINCIPAL (AZUL MARINO)
+  const mainTitle = document.createElement("h2");
+  mainTitle.style.cssText = "color: #1f3c73; font-size: 19px; font-weight: bold; text-transform: uppercase; margin-bottom: 20px;";
+  mainTitle.textContent = "RENOVACIÓN DE CRÉDITOS EN MODALIDAD GRUPAL";
+  container.appendChild(mainTitle);
+
+  // CONTENIDO EN PÁRRAFOS (SIN TABLA)
+  const contenidoPoliticas = `
+    <p style="margin-bottom: 12px;"><strong>1.</strong> Los grupos en primer ciclo no pueden renovarse, excepto en los siguientes casos: grupos nuevos por separación de integrantes o asignación de ciclos para igualar montos (validar con Coordinación).</p>
+    <p style="margin-bottom: 12px;"><strong>2.</strong> A partir del segundo ciclo se permite la renovación cuando el grupo lleve pagado el 80% de las cuotas del plan de pagos.</p>
+    <p style="margin-bottom: 0;"><strong>3.</strong> NO aplica renovación si el crédito adicional de algún integrante está en atraso.</p>
+  `;
+  
+  container.appendChild(crearBloqueRenovacion("Políticas", contenidoPoliticas));
+
+  // NOTA IMPORTANTE
+  const note = document.createElement("div");
+  note.style.cssText = `
+    margin-top: 12px;
+    padding: 15px;
+    background: #fff3cd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #000;
+    border: 1px solid #ffeeba;
+  `;
+  note.innerHTML = `<strong>Importante:</strong> Validar casos especiales con la <mark>COORDINACIÓN DE CRÉDITOS SOLIDARIOS.</mark>`;
+  container.appendChild(note);
+
+  return { type: 'html', content: container };
+}
+
+      if (keywords.saldos.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueSaldos = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+  // TÍTULO PRINCIPAL (AZUL MARINO)
+  const mainTitle = document.createElement("h2");
+  mainTitle.style.cssText = "color: #1f3c73; font-size: 19px; font-weight: bold; text-transform: uppercase; margin-bottom: 20px;";
+  mainTitle.textContent = "SALDOS INSOLUTOS – RENOVACIÓN DE CRÉDITO GRUPAL";
+  container.appendChild(mainTitle);
+
+ // CONTENIDO DEL CUERPO ORGANIZADO EN PUNTOS
+  const contenidoSaldos = `
+    <ul style="margin: 0; padding-left: 20px; color: #000; list-style-type: disc;">
+      <li style="margin-bottom: 12px;">
+        Cuando el crédito grupal se encuentre en <strong>atraso o con estatus vencido</strong> y los socios tengan 
+        intención de pago, podrán solicitar la <strong>renovación del crédito</strong> con un mínimo de <strong>tres integrantes</strong>.
+      </li>
+      <li style="margin-bottom: 12px;">
+        Esta renovación cubrirá los <strong>saldos de capital pendientes</strong> del grupo y se podrán incluir los saldos 
+        de capital del crédito adicional grupal que tengan los integrantes.
+      </li>
+      <li style="margin-bottom: 0;">
+        El crédito será <strong>sesionado por el Comité de Crédito</strong> y se apegará a lo establecido en las 
+        políticas generales de clasificación de cartera, tramitándose con el <strong>mismo producto crediticio</strong>.
+      </li>
+    </ul>
+  `;
+  
+  container.appendChild(crearBloqueSaldos(null, contenidoSaldos));
+
+ // NOTA INFORMATIVA (FONDO #fff3cd, PALABRA "Nota" EN NARANJA #f28511)
+  const note = document.createElement("div");
+  note.style.cssText = `
+    margin-top: 12px;
+    padding: 15px;
+    background: #fff3cd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #000;
+    border: 1px solid #d6d8db;
+  `;
+  note.innerHTML = `<strong> <span style="color: #f28511;">Nota:</span></strong> Esta acción se considera una <em>renovación de saldos insolutos</em>, ya que los montos pendientes se trasladan al nuevo crédito sin perder el seguimiento del capital original.`;
+  container.appendChild(note);
+
+  return { type: 'html', content: container };
+}
+
+   
+if (keywords.expedientes.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueExpedientes = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+  // TÍTULO PRINCIPAL (AZUL MARINO)
+  const mainTitle = document.createElement("h2");
+  mainTitle.style.cssText = "color: #1f3c73; font-size: 19px; font-weight: bold; text-transform: uppercase; margin-bottom: 20px;";
+  mainTitle.textContent = "CREACIÓN DE EXPEDIENTES";
+  container.appendChild(mainTitle);
+
+  // INTRODUCCIÓN Y LISTA EN PUNTOS
+  const contenidoExpedientes = `
+    <p style="margin-bottom: 15px; color: #000;">Para crear un nuevo expediente grupal, se deben seguir los siguientes pasos y cumplir con los requisitos:</p>
+    <ul style="margin: 0; padding-left: 20px; color: #000; list-style-type: disc;">
+      <li style="margin-bottom: 10px;">Se integrará un expediente a nombre del grupo y otro por cada integrante individual.</li>
+      <li style="margin-bottom: 10px;">La fotografía grupal deberá estar digitalizada antes del desembolso y debe actualizarse cuando se agreguen o eliminen integrantes.</li>
+      <li style="margin-bottom: 10px;">Cada integrante del grupo deberá ahorrar durante la vida del crédito; este monto será acordado con el Asesor de Crédito y Recuperación o el personal operativo asignado a la sucursal.</li>
+      <li style="margin-bottom: 10px;">Reunir toda la documentación requerida del socio o grupo.</li>
+      <li style="margin-bottom: 10px;">Registrar los datos del socio o grupo en el sistema de la cooperativa.</li>
+      <li style="margin-bottom: 10px;">Adjuntar comprobantes de domicilio, ingresos y cualquier otra evidencia necesaria.</li>
+      <li style="margin-bottom: 10px;">Verificar que la información esté completa y correcta antes de guardar el expediente.</li>
+      <li style="margin-bottom: 0;">Enviar el expediente para revisión y aprobación por el área correspondiente.</li>
+    </ul>
+  `;
+
+  container.appendChild(crearBloqueExpedientes(null, contenidoExpedientes));
+
+  return { type: "html", content: container };
+}
+      
+if (keywords.incremento.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueIncremento = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+// TÍTULO PRINCIPAL (Diseño de Cinta Corporativa Unificado)
+const mainTitle = document.createElement("h2");
+mainTitle.style.cssText = `
+  background-color: #1f3c73; 
+  color: #ffffff; 
+  font-size: 19px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  margin-bottom: 20px; 
+  padding: 15px; 
+  border-radius: 4px; 
+  text-align: justify;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  line-height: 1.3;
+`;
+mainTitle.textContent = "INCREMENTO DE CRÉDITO PARA SOCIOS ANTIGUOS";
+container.appendChild(mainTitle);
+
+  // CONTENIDO EN PUNTOS
+  const contenidoIncremento = `
+    <ul style="margin: 0; padding-left: 20px; color: #000; list-style-type: disc;">
+      <li style="margin-bottom: 15px;">
+        <strong>Socios antiguos con buen historial de pagos:</strong> Aquellos que hayan reducido sus montos de crédito, cambiado de grupo o estado inactivo por menos de dos años, podrán acceder a un incremento en su siguiente crédito tomando como base el monto más alto recibido y su nueva capacidad de pago, de acuerdo con la tabla de incrementos.
+      </li>
+      <li style="margin-bottom: 0;">
+        <strong>Socios con historial positivo pero inactivos más de dos años:</strong> Se realizará el trámite de crédito considerando su historial y capacidad de pago, siguiendo estrictamente el Proceso de Crédito (PDC).
+      </li>
+    </ul>
+  `;
+
+  container.appendChild(crearBloqueIncremento(null, contenidoIncremento));
+
+  return { type: 'html', content: container };
+}
+
+if (keywords.domicilio.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- ESTILOS DE TABLA ---
+  const tableStyle = `width:100%; border-collapse:collapse; font-family:Arial; font-size:13px; margin-top:10px; border:1px solid #000; background-color: white;`;
+  const headerStyle = `background:#1f3c73; color:white; border:1px solid #000; padding:10px; text-align:center; font-weight:bold;`;
+  const cellStyle = `border:1px solid #000; padding:8px; text-align:center; color:#000;`;
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueVivienda = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+// TÍTULO PRINCIPAL (Diseño de Cinta Corporativa Unificado)
+const mainTitle = document.createElement("h2");
+mainTitle.style.cssText = `
+  background-color: #1f3c73; 
+  color: #ffffff; 
+  font-size: 19px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  margin-bottom: 20px; 
+  padding: 15px; 
+  border-radius: 4px; 
+  text-align: justify;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  line-height: 1.3;
+  font-family: sans-serif;
+`;
+mainTitle.textContent = "POLITICAS DE TIPO DE VIVIENDA";
+container.appendChild(mainTitle);
+
+// 1. CLASIFICACIÓN DE VIVIENDAS
+const contenidoClasificacion = `
+  <p style="font-weight: bold; margin-bottom: 10px; color: #1f3c73;">📋 Cómo clasificamos las viviendas:</p>
+  <ul style="margin: 0; padding-left: 20px; color: #333; list-style-type: disc; line-height: 1.5;">
+    <li style="margin-bottom: 8px;">
+      <strong>Parentescos válidos para vivienda familiar:</strong> 
+      Hermanos, padres, hijos, abuelos, nietos, suegros, cuñados.
+    </li>
+    <li style="margin-bottom: 0;">
+      <strong>Parentescos válidos para vivienda propia:</strong> 
+      A nombre del socio, cónyuge o concubino(a).
+    </li>
+  </ul>
+`;
+  container.appendChild(crearBloqueVivienda(null, contenidoClasificacion));
+
+  // NOTA 1: ACTUALIZACIÓN PROPIA/FAMILIAR
+  const note1 = document.createElement("div");
+  note1.style.cssText = "margin-bottom:20px;padding:15px;background:#fff3cd;border-radius:6px;font-size:14px;color:#000;border:1px solid #ffeeba;";
+  note1.innerHTML = `<strong> <span style="color: #f28511;">Nota:</span> ¿Cuándo se actualizan?</strong><br>Socios con domicilio propio o familiar actualizarán su comprobante cada año o cuando cambien de domicilio.`;
+  container.appendChild(note1);
+
+  // 2. VIVIENDA RENTADA O PRESTADA (TABLA)
+  const contenidoTabla = `
+    <p style="font-weight: bold; margin-bottom: 10px;">Personas con vivienda rentada o prestada:</p>
+    <p style="margin-bottom: 15px;">Tabla de integrantes con propiedad rentada o prestada por cada grupo:</p>
+    <table style="${tableStyle}">
+      <thead>
+        <tr style="${headerStyle}">
+          <th>Total Integrantes</th>
+          <th>Integrantes con vivienda rentada/prestada</th>
+          <th>Integrantes con vivienda propia/familiar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="${cellStyle}">5</td><td style="${cellStyle}">2</td><td style="${cellStyle}">3</td></tr>
+        <tr><td style="${cellStyle}">10</td><td style="${cellStyle}">4</td><td style="${cellStyle}">6</td></tr>
+        <tr><td style="${cellStyle}">15</td><td style="${cellStyle}">6</td><td style="${cellStyle}">9</td></tr>
+        <tr><td style="${cellStyle}">20</td><td style="${cellStyle}">8</td><td style="${cellStyle}">12</td></tr>
+      </tbody>
+    </table>
+  `;
+  container.appendChild(crearBloqueVivienda(null, contenidoTabla));
+
+  // NOTA 2: ACTUALIZACIÓN RENTADA
+  const note2 = document.createElement("div");
+  note2.style.cssText = "margin-bottom:20px;padding:15px;background:#fff3cd;border-radius:6px;font-size:14px;color:#000;border:1px solid #ffeeba;";
+  note2.innerHTML = `<strong> <span style="color: #f28511;">Nota:</span> ¿Cuándo se actualizan?</strong><br>Socios que rentan o habitan vivienda prestada actualizarán su comprobante cada trámite.`;
+  container.appendChild(note2);
+
+  // 3. POLÍTICAS DE INCORPORACIÓN
+  const contenidoPolíticas = `
+    <p style="font-weight: bold; font-size: 16px; margin-bottom: 15px;">Políticas para la incorporación de integrantes que viven en vivienda prestada o rentada</p>
+    <ol style="margin: 0; padding-left: 20px; color: #000; line-height: 1.8;">
+      <li style="margin-bottom: 10px;"><strong>Renovaciones sin atrasos:</strong> En renovaciones de grupos que no hayan presentado atrasos de más de una cuota, se podrán agregar más integrantes que viven en vivienda prestada o rentada, siempre y cuando <mark>su número sea igual o inferior al 50 % del total de integrantes.</mark></li>
+      <li style="margin-bottom: 10px;"><strong>Monto máximo:</strong><br>El monto máximo a otorgar será la cantidad de <mark>$70,000.00</mark> por integrante nuevo que renta.</li>
+      <li style="margin-bottom: 0;"><strong>Socios con historial:</strong><br>Para socios que hayan trabajado en la cooperativa un monto mayor a $70,000.00 se le podrá respetar el monto en la renovación o créditos posteriores.</li>
+    </ol>
+  `;
+  container.appendChild(crearBloqueVivienda(null, contenidoPolíticas));
+
+  // NOTA FINAL: IMPORTANTE
+  const finalNote = document.createElement("div");
+  finalNote.style.cssText = "margin-top:15px;padding:15px;background:#fff3cd;border-radius:6px;font-size:14px;color:#000;border:1px solid #ffeeba;";
+  finalNote.innerHTML = `<strong><span style="color: #f28511;">Importante:</span></strong> Esta política busca mitigar el riesgo manteniendo equilibrio entre integrantes con vivienda propia/familiar y quienes rentan.`;
+  container.appendChild(finalNote);
+
+  return { type: "html", content: container };
+}
+     
+if (keywords.comprobante.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueComprobante = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+// TÍTULO PRINCIPAL (Diseño de Cinta Corporativa Unificado)
+const mainTitle = document.createElement("h2");
+mainTitle.style.cssText = `
+  background-color: #1f3c73; 
+  color: #ffffff; 
+  font-size: 19px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  margin-bottom: 20px; 
+  padding: 15px; 
+  border-radius: 4px; 
+  text-align: justify;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  line-height: 1.3;
+  font-family: sans-serif;
+`;
+mainTitle.textContent = "COMPROBANTE DE DOMICILIO";
+container.appendChild(mainTitle);
+
+  // 1. REQUISITOS GENERALES (INCISOS EN NEGRO)
+  const contenidoRequisitos = `
+    <p style="font-weight: bold; margin-bottom: 10px;">1. Requisitos generales del comprobante de domicilio:</p>
+    <div style="padding-left: 5px;">
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold; color:#000;">a)</span><span style="color:#000;">El comprobante deberá tener una antigüedad máxima de tres meses a partir de su fecha de emisión.</span></div>
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold; color:#000;">b)</span><span style="color:#000;">La dirección deberá coincidir con la registrada en el sistema.</span></div>
+      <div style="display:flex; margin-bottom:8px;"><span style="min-width:30px; font-weight:bold; color:#000;">c)</span><span style="color:#000;">Si el comprobante no está a nombre del socio o aval, se deberá especificar la relación o parentesco con el titular.</span></div>
+    </div>
+  `;
+  container.appendChild(crearBloqueComprobante(null, contenidoRequisitos));
+
+  // 2. TIPOS DE COMPROBANTES (PUNTOS EN NEGRO)
+  const contenidoTipos = `
+    <p style="font-weight: bold; margin-bottom: 10px;">2. Tipos de comprobantes de domicilio aceptados:</p>
+    <ul style="margin: 0; padding-left: 20px; color: #000; list-style-type: disc;">
+      <li style="margin-bottom: 5px;">Recibo de suministro de energía eléctrica o comprobante CFEmático.</li>
+      <li style="margin-bottom: 5px;">Recibo o estado de cuenta del servicio de agua.</li>
+      <li style="margin-bottom: 5px;">Recibo de gas natural.</li>
+      <li style="margin-bottom: 5px;">Boleta predial del año en curso.</li>
+      <li style="margin-bottom: 5px;">Recibo de servicios de telecomunicaciones fija.</li>
+      <li style="margin-bottom: 5px;">Estado de cuenta bancario (no nómina).</li>
+      <li style="margin-bottom: 0;">Constancia de Origen y Vecindad expedida por autoridad competente con visto bueno correspondiente.</li>
+    </ul>
+  `;
+  container.appendChild(crearBloqueComprobante(null, contenidoTipos));
+
+  // NOTA INFORMATIVA
+  const note = document.createElement("div");
+  note.style.cssText = `
+    margin-top: 14px;
+    padding: 15px;
+    background: #fff3cd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #000;
+    border: 1px solid #ffeeba;
+  `;
+  note.innerHTML = `
+    <strong> <span style="color: #f28511;">Nota:</span></strong> 
+    Cuando la dirección registrada no coincida con el comprobante, se deberá anotar la leyenda 
+    <em>"Corroboré domicilio"</em> y detallar la dirección correcta en el margen del documento.
+    <br><br>
+    Si varios integrantes presentan el mismo comprobante pero habitan viviendas distintas, deberán
+    anexar fotografías de la fachada y del acceso principal de cada vivienda. No se consideran
+    viviendas distintas las construcciones en segundos niveles de la misma casa.
+  `;
+  container.appendChild(note);
+
+  return { type: 'html', content: container };
+}
+   
+if (keywords.recurso.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueRecurso = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+ // TÍTULO PRINCIPAL (Diseño de Cinta Corporativa Unificado)
+const mainTitle = document.createElement("h2");
+mainTitle.style.cssText = `
+  background-color: #1f3c73; 
+  color: #ffffff; 
+  font-size: 19px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  margin-bottom: 20px; 
+  padding: 15px; 
+  border-radius: 4px; 
+  text-align: justify;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  line-height: 1.3;
+  font-family: sans-serif;
+`;
+mainTitle.textContent = "COMPROBACIÓN CRÉDITO COMERCIAL";
+container.appendChild(mainTitle);
+
+  // CONTENIDO EN LISTA (CON MARKS RESPETADOS)
+  const contenidoRecurso = `
+    <ul style="margin: 0; padding-left: 20px; color: #000; list-style-type: disc;">
+      <li style="line-height: 1.8;">
+        Todo crédito con finalidad comercial de 
+        <mark><strong>grupos nuevos (1er. 2do. y 3er ciclo) se deberá verificar</strong></mark> 
+        la comprobación de la aplicación del recurso (de manera física o con autenticador digital) 
+        <mark><strong>dentro de los 30 días</strong></mark> naturales posteriores al desembolso en créditos de 
+        <mark><strong>montos mayores de $50,000.00 (cincuenta mil pesos 00/100 M. N.).</strong></mark>
+      </li>
+    </ul>
+  `;
+
+  container.appendChild(crearBloqueRecurso(null, contenidoRecurso));
+
+  return { type: 'html', content: container };
+}    
+
+ if (keywords.adicional.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- ESTILOS DE TABLA ---
+  const tableStyle = `width:100%; border-collapse:collapse; font-family:Arial; font-size:13px; margin-top:10px; border:1px solid #000; background-color: white;`;
+  const headerStyle = `background:#1f3c73; color:white; border:1px solid #000; padding:10px; text-align:center; font-weight:bold;`;
+  const cellStyle = `border:1px solid #000; padding:8px; text-align:center; color:#000;`;
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueAdicional = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+ // TÍTULO PRINCIPAL (Diseño de Cinta Corporativa Unificado)
+const mainTitle = document.createElement("h2");
+mainTitle.style.cssText = `
+  background-color: #1f3c73; 
+  color: #ffffff; 
+  font-size: 19px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  margin-bottom: 20px; 
+  padding: 15px; 
+  border-radius: 4px; 
+  text-align: justify;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  line-height: 1.3;
+  font-family: sans-serif;
+`;
+mainTitle.textContent = "CRÉDITO GRUPAL ADICIONAL";
+container.appendChild(mainTitle);
+
+  // 1. CARACTERÍSTICAS Y TABLA
+  const contenidoCaracteristicas = `
+    <p style="font-weight: bold; margin-bottom: 10px;">📋 Características del crédito adicional grupal:</p>
+    <ul style="margin: 0 0 20px 0; padding-left: 20px; color: #000; list-style-type: disc;">
+      <li>Monto: de $3,000.00 hasta $25,000.00</li>
+      <li>Tasa de interés anual natural: 32%</li>
+      <li>Tasa de interés moratoria anual: 36%</li>
+      <li>Plazo: de 6 a 18 meses</li>
+      <li>Periodicidad: semanal, Catorcenal, Quincenal o Mensual</li>
+      <li>Garantía: del 10 % del monto solicitado</li>
+      <li>Cobertura del crédito: 1 % del monto solicitado</li>
+    </ul>
+    <p style="font-weight: bold; margin-bottom: 8px;">Tabla de referencia:</p>
+    <table style="${tableStyle}">
+      <thead>
+        <tr style="${headerStyle}">
+          <th>Rango de Montos</th>
+          <th>Plazo Máximo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="${cellStyle}">$3,000 a $5,000</td><td style="${cellStyle}">6 meses</td></tr>
+        <tr><td style="${cellStyle}">$5,001 a $15,000</td><td style="${cellStyle}">12 meses</td></tr>
+        <tr><td style="${cellStyle}">$15,001 a $25,000</td><td style="${cellStyle}">18 meses</td></tr>
+      </tbody>
+    </table>
+  `;
+  container.appendChild(crearBloqueAdicional(null, contenidoCaracteristicas));
+
+  // NOTA 1
+  const note1 = document.createElement("div");
+  note1.style.cssText = "margin-bottom:20px;padding:15px;background:#fff3cd;border-radius:6px;font-size:14px;color:#000;border:1px solid #ffeeba;";
+  note1.innerHTML = `<strong> <span style="color: #f28511;">Nota:</span></strong> Se necesitará la autorización de todo el grupo por medio de una carta de consentimiento (no es necesario que el solicitante la firme) la cual tiene una vigencia de 30 días.`;
+  container.appendChild(note1);
+
+  // 2. POLÍTICAS
+  const contenidoPoliticas = `
+    <p style="font-weight: bold; margin-bottom: 10px;">📌 Políticas:</p>
+    <div style="padding-left: 5px; color: #000;">
+      <p style="margin-bottom: 8px;"><strong>a)</strong> A partir del tercer ciclo siempre y cuando el grupo lleve un mes de pagos puntuales (4 semanas, 2 catorcenas o quincenas) de acuerdo con su plan de pago.</p>
+      <p style="margin-bottom: 8px;"><strong>b)</strong> El socio deberá estar trabajando o haber pagado un crédito grupal con monto igual o mayor a $6,000.00</p>
+      <p style="margin-bottom: 8px;"><strong>c)</strong> Como crédito adicional el socio tendrá acceso al 50 % del monto trabajado en el ciclo o el monto más alto con el que haya trabajado en créditos grupales. Teniendo como mínimo $3,000.00 y un máximo de $25,000.00 previamente validado con su capacidad de pago.</p>
+      <p style="margin-bottom: 8px;"><strong>d)</strong> En caso de solicitar un crédito adicional mayor de $15,001.00 se necesita haber pagado un monto igual a $15,000.00 sin haberse atrasado más de un pago, con excepción de los convenios de colaboración (agua, etc.).</p>
+      <p style="margin-bottom: 8px;"><strong>e)</strong> No se otorgará el crédito adicional grupal si el grupo se encuentra en atrasos.</p>
+      <p style="margin-bottom: 0;"><strong>f)</strong> Se podrá renovar una vez pagado el 50 % del monto otorgado.</p>
+    </div>
+  `;
+  container.appendChild(crearBloqueAdicional(null, contenidoPoliticas));
+
+// --- 3. PROGRAMA AGUA Y SANEAMIENTO ---
+const contenidoAgua = `
+  <p style="font-weight: bold; margin-bottom: 10px;">💧 Programa: Agua y Saneamiento</p>
+  <p style="margin-bottom: 10px;">Políticas de créditos destinados a la mejora de sistemas de almacenamiento, saneamiento y cuidado del agua:</p>
+  
+  <ul style="margin: 0; padding-left: 20px; color: #000; list-style-type: none; margin-bottom: 20px;">
+    <li style="margin-bottom: 8px;">1. Socios con crédito grupal activo o grupos nuevos en la cooperativa.</li>
+    <li style="margin-bottom: 8px;">2. Los productos participantes son: crédito adicional grupal y grupal consumo-avance.</li>
+    <li style="margin-bottom: 0;">3. Finalidades del crédito:</li>
+    <li style="padding-left: 15px; margin-top: 5px;">• Compra de tinacos, biodigestores y/o calentadores solares.</li>
+    <li style="padding-left: 15px;">• Construcción o remodelación de sanitario.</li>
+    <li style="padding-left: 15px;">• Mobiliario y accesorios (tazas, regaderas, llaves, etc.).</li>
+    <li style="padding-left: 15px;">• Conexión (plomería, tuberías o drenaje).</li>
+    <li style="padding-left: 15px;">• Construcción de letrinas, fosas sépticas, cisternas o tanques para almacenar agua doméstica.</li>
+    <li style="padding-left: 15px;">• Compra e instalación de motobomba doméstica o filtros de purificación de agua.</li>
+    <li style="padding-left: 15px;">• Construcción o finalización de pozo profundo.</li>
+  </ul>
+
+  <div style="background-color: #e8f0fe; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #d0e0fc;">
+    <p style="font-weight: bold; color: #1f3c73; margin-top: 0; font-size: 14px;">Politicas para entrega con finalidad Agua y Sanamiento:</p>
+    <p style="font-size: 13px; margin-bottom: 10px;">Para socios con crédito grupal activo, se podrá entregar un Crédito Adicional Grupal apegándose a:</p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #333;">
+      <li>No se deberá contar con un Crédito Adicional Grupal activo.</li>
+      <li>No deberán haberse atrasado más de una cuota en el crédito grupal vigente.</li>
+      <li>Socios en su <strong>primer o segundo ciclo</strong>: deberán haber cubierto como mínimo el <strong>50% de sus cuotas</strong> pactadas.</li>
+      <li>La evaluación y resolución será con base a lo establecido en el presente manual.</li>
+      <li>Presentar cotización de compra de material, mano de obra o proyecto constructivo.</li>
+    </ul>
+  </div>
+
+  <p style="font-weight: bold; color: #1f3c73; margin-bottom: 10px; font-size: 14px;">📊 CARACTERÍSTICAS PARA LA FINALIDAD DE AGUA Y SANEAMIENTO:</p>
+  <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; background: white; color: #000;">
+    <thead>
+      <tr style="background-color: #1f3c73; color: white;">
+        <th style="padding: 8px; border: 1px solid #ddd;">DATOS</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">GRUPAL CON-SUMO AVANCE</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">CRÉDITO ADICIONAL GRUPAL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Monto:</td>
+        <td colspan="2" style="padding: 8px; border: 1px solid #ddd; text-align: center;">Desde $3,000.00 hasta $50,000.00</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Plazo:</td>
+        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">Hasta 10 meses</td>
+        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">Hasta 24 meses</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Periodicidad de pago:</td>
+        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">Semanal, catorcenal o quincenal.</td>
+        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">Semanal, catorcenal, quincenal o mensual.</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Tasa de interés natural:</td>
+        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">30% anual más IVA.</td>
+        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">26% anual más IVA.</td>
+      </tr>
+      <tr style="background: #f9f9f9;">
+        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Tasa de interés moratoria:</td>
+        <td colspan="2" style="padding: 8px; border: 1px solid #ddd; text-align: center;">36% anual más IVA.</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Garantía:</td>
+        <td colspan="2" style="padding: 8px; border: 1px solid #ddd; text-align: center;">Garantía del hasta 5% sobre el monto solicitado.</td>
+      </tr>
+      <tr style="background: #f9f9f9;">
+        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Cobertura al crédito:</td>
+        <td colspan="2" style="padding: 8px; border: 1px solid #ddd; text-align: center;">1% del monto del crédito.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-weight: bold; color: #1f3c73; margin-bottom: 10px; font-size: 14px;">📅 MONTOS Y PLAZOS PARA LA FINALIDAD DE AGUA Y SANEAMIENTO:</p>
+  <table style="width: 100%; border-collapse: collapse; font-size: 12px; background: white; color: #000;">
+    <thead>
+      <tr style="background: #6495ED; color: white;">
+        <th style="padding: 6px; border: 1px solid #ddd;">MÍNIMO / RANGO</th>
+        <th style="padding: 6px; border: 1px solid #ddd;">PLAZO</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="padding: 6px; border: 1px solid #ddd;">$3,000.00 hasta $5,000.00</td><td style="padding: 6px; border: 1px solid #ddd; text-align: center;">6 meses</td></tr>
+      <tr><td style="padding: 6px; border: 1px solid #ddd;">$5,001.00 hasta $15,000.00</td><td style="padding: 6px; border: 1px solid #ddd; text-align: center;">12 meses</td></tr>
+      <tr><td style="padding: 6px; border: 1px solid #ddd;">$15,001.00 hasta $25,000.00</td><td style="padding: 6px; border: 1px solid #ddd; text-align: center;">18 meses</td></tr>
+      <tr><td style="padding: 6px; border: 1px solid #ddd;">$25,001.00 hasta $50,000.00</td><td style="padding: 6px; border: 1px solid #ddd; text-align: center;">24 meses</td></tr>
+    </tbody>
+  </table>
+`;
+
+container.appendChild(crearBloqueAdicional("PROGRAMA AGUA Y SANEAMIENTO", contenidoAgua));
+
+  // NOTA FINAL (IMPORTANTE)
+  const finalNote = document.createElement("div");
+  finalNote.style.cssText = "margin-top:15px;padding:15px;background:#fff3cd;border-radius:6px;font-size:14px;color:#000;border:1px solid #ffeeba;";
+  finalNote.innerHTML = `<strong> <span style="color: #f28511;">Importante:</span></strong> Consulta con la coordinación de créditos solidarios para más detalles sobre programas especiales y convenios de colaboración.`;
+  container.appendChild(finalNote);
+
+  return { type: 'html', content: container };
+}
+
+if (keywords.nuevos.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueGruposNuevos = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+  // TÍTULO PRINCIPAL (Diseño de Cinta Corporativa Unificado)
+const mainTitle = document.createElement("h2");
+mainTitle.style.cssText = `
+  background-color: #1f3c73; 
+  color: #ffffff; 
+  font-size: 19px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  margin-bottom: 20px; 
+  padding: 15px; 
+  border-radius: 4px; 
+  text-align: justify;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  line-height: 1.3;
+  font-family: sans-serif;
+`;
+  mainTitle.textContent = "GRUPOS NUEVOS";
+  container.appendChild(mainTitle);
+
+  // CONTENIDO: REQUISITOS Y LISTA NUMERADA
+  const contenidoGrupos = `
+    <p style="font-weight: bold; margin-bottom: 10px;">REQUISITOS PARA FORMAR UN GRUPO</p>
+    <ul style="margin-bottom: 15px; padding-left: 20px;">
+      <li>Todos los integrantes deberán ser socios de la cooperativa.</li>
+    </ul>
+    
+    <ol style="margin: 0; padding-left: 20px; color: #000;">
+      <li style="margin-bottom: 12px;">
+        <strong>Número de integrantes:</strong><br>
+        El grupo deberá contar con un mínimo de <mark>5 integrantes</mark>.
+      </li>
+      <li style="margin-bottom: 12px;">
+        <strong>Rango de edad:</strong><br>
+        Desde los <mark>18</mark> hasta los <mark>70 años</mark> (0 días).
+      </li>
+      <li style="margin-bottom: 12px;">
+        <strong>Integrantes que rentan:</strong><br>
+        Máximo <mark>2 personas</mark> con vivienda rentada o prestada.
+      </li>
+      <li style="margin-bottom: 12px;">
+        <strong>Distancia:</strong><br>
+        La distancia entre viviendas o puntos de trabajo debe ser ≤ <mark>5 km</mark>.
+      </li>
+      <li style="margin-bottom: 12px;">
+        <strong>Comprobante de ingresos:</strong><br>
+        Todos los integrantes deben contar con ingresos propios.
+      </li>
+      <li style="margin-bottom: 12px;">
+        <strong>Garantías y protección:</strong>
+        <ul style="margin-top:6px; padding-left: 20px; list-style-type: circle;">
+          <li>Garantía mínima equivalente al <mark>10%</mark> del monto del crédito, la cual podrá ser depositada o retenida en su totalidad.</li>
+          <li>Protección del <mark>1 %</mark> por crédito ($10 por cada $1,000.00).</li>
+        </ul>
+      </li>
+      <li style="margin-bottom: 12px;">
+        <strong>Sujeto a crédito:</strong><br>
+        Los integrantes deberán contar con clasificación de riesgo <mark>bajo o medio</mark>.
+      </li>
+      <li style="margin-bottom: 0;">
+        <strong>Integrantes por domicilio:</strong><br>
+        Máximo <mark>2 integrantes</mark> podrán vivir en el mismo domicilio.
+      </li>
+    </ol>
+  `;
+
+  container.appendChild(crearBloqueGruposNuevos(null, contenidoGrupos));
+const contenidoDivision = `
+    <p style="margin-bottom: 10px;">Cuando los grupos decidan <strong>dividirse</strong> , el grupo nuevo que se genere se le podrá asignar la tasa
+correspondiente a su historial en la Cooperativa Acreimex de acuerdo con el producto crediticio
+que le corresponda, siempre y cuando el grupo nuevo esté conformado por mínimo el <mark>40%</mark> delos integrantes del grupo de origen, liquidando totalmente las obligaciones del crédito anterior.:</p>
+           `;
+  container.appendChild(crearBloqueGruposNuevos("DIVISIÓN DE GRUPOS", contenidoDivision));
+
+  // NOTA INFORMATIVA (CON "Nota" EN NARANJA)
+  const note = document.createElement("div");
+  note.style.cssText = `
+    margin-top: 15px;
+    padding: 15px;
+    background: #fff3cd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #000;
+    border: 1px solid #ffeeba;
+  `;
+  note.innerHTML = `
+    <strong> <span style="color: #f28511;">Nota</span> – Finalidad del crédito:</strong>
+    <ul style="margin-top:8px; padding-left: 20px;">
+      <li style="margin-bottom: 5px;"><strong>Finalidad comercial:</strong> Aplica cuando todos los integrantes cuentan con actividad comercial.</li>
+      <li style="margin-bottom: 5px;">Si algún integrante percibe ingresos por nómina, pero comprueba que el crédito será destinado a un negocio, se considerará finalidad comercial.</li>
+      <li>Si no se justifica la inversión, el crédito se otorgará como producto de finalidad de consumo.</li>
+    </ul>
+  `;
+  container.appendChild(note);
+
+  return { type: 'html', content: container };
+}     
+
+// ==========================================
+// NUEVO APARTADO: PROCESO DE DESEMBOLSO (POR TARJETAS)
+// ==========================================
+if (keywords.desembolso && keywords.desembolso.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- FUNCIÓN PARA CREAR LAS TARJETAS INDEPENDIENTES ---
+  const crearTarjetaProceso = (contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 22px;
+      margin-bottom: 15px;
+      font-family: Arial, sans-serif;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    `;
+    div.innerHTML = `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    return div;
+  };
+
+  // TÍTULO PRINCIPAL (Diseño de Cinta Corporativa Unificado)
+  const mainTitle = document.createElement("h2");
+  mainTitle.style.cssText = `
+    background-color: #1f3c73; 
+    color: #ffffff; 
+    font-size: 19px; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    margin-bottom: 20px; 
+    padding: 15px; 
+    border-radius: 4px; 
+    text-align: justify;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    line-height: 1.3;
+    font-family: sans-serif;
+  `;
+  mainTitle.textContent = "PROCESO DE DESEMBOLSO DE CRÉDITO";
+  container.appendChild(mainTitle);
+
+  // --- TARJETA 1 ---
+  const t1 = `
+    <p style="margin-top: 0; margin-bottom: 8px; font-weight: bold; color: #1f3c73;">1. ACTIVIDADES PREVIAS AL DESEMBOLSO.</p>
+    <p style="margin-bottom: 5px;"><strong>a.</strong> Confirma que el crédito haya sido sesionado y autorizado por alguno de los órganos facultados (Comité de crédito, Subcomité de crédito, Gerente de sucursal).</p>
+    <p style="margin-bottom: 5px;"><strong>b.</strong> Una vez confirmado el monto total autorizado, se informa a los integrantes del grupo y se programa el día y hora para desembolso.</p>
+    <p style="margin-bottom: 0;"><strong>c.</strong> Agenda el recurso con el Ejecutivo de servicios, indicando <strong>monto, día y hora programados para el desembolso.</strong></p>
+  `;
+  container.appendChild(crearTarjetaProceso(t1));
+
+  // --- TARJETA 2 ---
+  const t2 = `
+    <p style="margin-top: 0; margin-bottom: 8px; font-weight: bold; color: #1f3c73;">2. AJUSTES EN SISTEMA. (El día del desembolso)</p>
+    <p style="margin-bottom: 5px;"><strong>a.</strong> Revisa el crédito y <strong>corrobora que se encuentre autorizado en sistema y que la fecha de desembolso sea correcta.</strong></p>
+    <p style="margin-bottom: 5px;"><strong>b. Comunícate con el grupo para confirmar el desembolso y solicita a los integrantes que decidan el día de pago, </strong>(Considerando que preferentemente elijan el día de la semana que más se les facilite para realizar sus pagos).</p>
+    <p style="margin-bottom: 0;"><strong>c. Si el día de pago elegido es un día distinto al día del desembolso, </strong>ajusta el día de pago en el módulo de crédito, por ejemplo, si el desembolso es lunes y el grupo quisiera pagar los jueves.</p>
+  `;
+  container.appendChild(crearTarjetaProceso(t2));
+
+  // --- TARJETA 3 ---
+  const t3 = `
+    <p style="margin-top: 0; margin-bottom: 8px; font-weight: bold; color: #1f3c73;">3. IMPRESIÓN DE DOCUMENTOS BASE.</p>
+    <p style="margin-bottom: 8px;">Después de a ver ajustado ó confirmado en sistema la fecha de desembolso y día de pago, en el crédito, dirígete a la botonera e ingresa a <mark>“IMPRESIÓN DE DOCUMENTOS”</mark> para generar e imprimir la siguiente documentación:</p>
+    <p style="margin-bottom: 5px; padding-left: 15px;"><strong>a. SOLICITUD DE CRÉDITO AUTORIZADA.</p>
+    <p style="margin-bottom: 5px; padding-left: 15px;">b. CONTRATO DE CRÉDITO. (carátula y/o anexos)</p>
+    <p style="margin-bottom: 0; padding-left: 15px;">c. PAGARÉ DE CRÉDITO.</strong></p>
+  `;
+  container.appendChild(crearTarjetaProceso(t3));
+
+  // --- TARJETA 4 ---
+  const t4 = `
+    <p style="margin-top: 0; margin-bottom: 8px; font-weight: bold; color: #1f3c73;">4. INICIO DEL DESEMBOLSO.</p>
+    <p style="margin-bottom: 8px;">Para dar inicio con el desembolso es necesario que ya estén presentes todos los integrantes reunidos para realizar lo siguiente:</p>
+    <p style="margin-bottom: 8px;"><strong>a.</strong> En presencia de todos los integrantes, informa nuevamente los montos autorizados a cada integrante, el monto total autorizado al grupo, días de pago acordado, fecha del primer y último pago, tasa de interés moratoria en caso de atraso e <strong>informa al grupo que todos son responsables del monto total del crédito por ser un grupo solidario y por la firma del pagaré colectivo.</strong></p>
+    <p style="margin-bottom: 8px;"><strong>b. Asesora al grupo para que definan un horario y en donde se reunirán los pagos, quien será el responsable de reunirlos y realizar el depósito.</strong> Además, es recomendable indicarles que <strong>creen un grupo de WhatsApp en donde te incluyan para que se facilite la comunicación hacia todos. </strong>El grupo de WhatsApp <strong>también se utilizará para que cada integrante informe cada que entregue su pago a quien este a cargo de reunirlos y, por último, la persona responsable de realizar el depósito deberá enviar evidencia de las tablas de pago selladas o del comprobante del depósito.</strong></p>
+    <p style="margin-bottom: 0;"><strong>c. Una vez que se haya informado todo lo anterior</strong> al grupo y ellos estén de acuerdo, <strong>solicita las identificaciones vigentes y recaba las firmas de cada uno de ellos en los documentos base </strong>(Solicitud de crédito, pagaré, contrato) <strong>y en los documentos que requieran firma en el expediente físico.</strong></p>
+  `;
+  container.appendChild(crearTarjetaProceso(t4));
+
+  // --- TARJETA 5 ---
+  const t5 = `
+    <p style="margin-top: 0; margin-bottom: 8px; font-weight: bold; color: #1f3c73;">5. REVISIÓN DE FIRMAS.</p>
+    <p style="margin-bottom: 8px;">Una vez que todos los integrantes hayan firmado, la documentación deberá ser revisada por el área de mesa de control y el proceso dependerá si en tu sucursal cuenta o no con algún integrante de esta área.</p>
+    <p style="margin-bottom: 8px;"><strong>a. Si la sucursal cuenta con la figura de mesa de control,</strong> únicamente debes llevar todos los expedientes físicos y documentación base con las firmas correspondientes, así como las identificaciones vigentes en original para la revisión.</p>
+    <p style="margin-bottom: 8px;"><strong>b. En las sucursales que no cuentan con esta figura, se deberá digitalizar en: <mark>Módulo de crédito > Pestaña digitalización > Opción “DOCUMENTOS BASE PARA PERMITIR DESEMBOLSO”</mark> los siguientes documentos firmados en un solo PDF:</p>
+    <ul style="margin: 0 0 8px 0; padding-left: 30px; list-style-type: square;">
+      <li>Solicitud de crédito.</li>
+      <li>Contrato y anexos.</li>
+      <li>Pagaré colectivo.</li>
+      <li>Acta de sesión.</li>
+      <li>Identificaciones de ambos lados</strong>.</li>
+    </ul>
+    <p style="margin-bottom: 8px; padding-left: 15px;">Una vez que esta información se encuentre digitalizada en sistema, <strong>registra tu solicitud para desembolso</strong> en el acceso que se encuentra <strong>en Intranet</strong> denominado <mark><strong>“MC – SOLICITUD DE DESEMBOLSO”</mark></strong></p>
+    <p style="margin-bottom: 0;"><strong>c.</strong> En ambos casos, <strong>después de que el área de mesa de control</strong> revise firmas <strong>y autorice el desembolso,</strong> debes ir a la botonera del crédito y procesar el desembolso para que el recurso sea distribuido a los integrantes. <strong>El sistema genera la póliza de desembolso, sin embargo, este formato no se imprime ni requiere de las firmas de acuerdo con el manual de crédito vigente.</strong></p>
+  `;
+  container.appendChild(crearTarjetaProceso(t5));
+
+  // --- TARJETA 6 ---
+  const t6 = `
+    <p style="margin-top: 0; margin-bottom: 8px; font-weight: bold; color: #1f3c73;">6. ENTREGA DE PLAN Y CONTROL DE PAGOS.</p>
+    <p style="margin-bottom: 8px;">Cuando el recurso del crédito se haya distribuido a cada integrante realiza lo siguiente:</p>
+    <p style="margin-bottom: 8px;"><strong>a.</strong> En la botonera del crédito, <strong>genera e imprime 2 juegos del plan de pagos del grupo. (Uno será entregado al grupo y en el segundo se deberán recabar nombre y firma de los integrantes</strong> y preferentemente el presidente <strong>agregará la leyenda “Recibimos plan de pagos” and la fecha).</strong></p>
+    <p style="margin-bottom: 8px;"><strong>b.</strong> En la botonera del crédito selecciona <mark>“IMPRESIÓN DE DOCUMENTOS”</mark>, <strong>genera e imprime el <mark>“CONTROL DE PAGO GRUPAL”</mark></strong> (Debe <strong>entregarse al grupo 1 carpeta que contenga 1 tabla por cada cuota del ciclo y el plan de pagos</strong> generado para el grupo)</p>
+    <p style="margin-bottom: 0;"><strong>c.</strong> Una vez que los socios hayan firmado el plan de pagos, <strong>entrega la identificación oficial y la instrucción para el retiro en el área de cajas.</strong></p>
+  `;
+  container.appendChild(crearTarjetaProceso(t6));
+
+  // --- TARJETA DE NOTA FINAL ---
+  const tNota = `
+    <p style="margin: 0; font-size: 12px; color: #121212;"><strong>NOTA: EN LAS SUCURSALES QUE NO CUENTAN CON LA FIGURA DE MESA DE CONTROL, EL ASESOR DEBERÁ DIGITALIZAR Y RESGUARDAR LA DOCUMENTACIÓN GENERADA Y FIRMADA.</strong></p>
+  `;
+  container.appendChild(crearTarjetaProceso(tNota));
+
+  return { type: 'html', content: container };
+}
+
+if (keywords.generalidades.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueDesembolso = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+ // TÍTULO PRINCIPAL (Diseño de Cinta Corporativa Unificado)
+const mainTitle = document.createElement("h2");
+mainTitle.style.cssText = `
+  background-color: #1f3c73; 
+  color: #ffffff; 
+  font-size: 19px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  margin-bottom: 20px; 
+  padding: 15px; 
+  border-radius: 4px; 
+  text-align: justify;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  line-height: 1.3;
+  font-family: sans-serif;
+`;
+  mainTitle.textContent = "DESEMBOLSO FUERA DE SUCURSAL";
+  container.appendChild(mainTitle);
+
+  // CONTENIDO DEL CUERPO
+  const contenidoCuerpo = `
+    <p style="font-weight: bold; margin-bottom: 12px; color: #1f3c73;">💰 DESEMBOLSO EN CAMPO</p>
+    <p style="margin-bottom: 10px;"><strong>DE LA ENTREGA DEL CRÉDITO FUERA DE SUCURSAL:</strong></p>
+    <p style="margin-bottom: 12px;">Los desembolsos fuera de sucursal sólo aplican para grupos con un valor de <strong>$60,000.00 o superior.</strong></p>
+    <ul style="margin: 0; padding-left: 20px; color: #000; list-style-type: disc;">
+      <li style="margin-bottom: 8px;">Se envía el formato <mark>"desembolso fuera de sucursal"</mark> para visto bueno a la coordinación de créditos solidarios.</li>
+      <li style="margin-bottom: 8px;">Una vez que se tenga el visto bueno, mesa de control permitirá el desembolso en el sistema entendiendose que el pagaré, contrato y plan de pagos no cuentan con las firmas de los socios.</li>
+      <li style="margin-bottom: 8px;">Una vez permitido el desembolso por mesa de control se expide el cheque a nombre del socio por la cantidad a entregar.</li>
+      <li style="margin-bottom: 8px;">El asesor es el responsable de recabar y cotejar las firmas.</li>
+      <li style="margin-bottom: 8px;">La documenación firmada se debe entregar a mesa de control el mismo día de la entrega del crédito.</li>
+      <li style="margin-bottom: 8px;">En caso de haber un error u omision se deberán realizar las correciones a más tardar un día hábil despues de haber realizado el desembolso.</li>
+      <li style="margin-bottom: 0;">En caso de que el desembolso en campo no se realice, se debe notificar de inmediato al gerente de sucursal para reversar los movimientos, en caso de no avisar inmediatamente el asesor será el responsable de los costos generados.</li>
+    </ul>
+  `;
+
+  container.appendChild(crearBloqueDesembolso(null, contenidoCuerpo));
+
+  return { type: 'html', content: container };
+}
+
+if (keywords.adulto.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueAdultos = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+ // TÍTULO PRINCIPAL (Diseño de Cinta Corporativa Unificado)
+const mainTitle = document.createElement("h2");
+mainTitle.style.cssText = `
+  background-color: #1f3c73; 
+  color: #ffffff; 
+  font-size: 19px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  margin-bottom: 20px; 
+  padding: 15px; 
+  border-radius: 4px; 
+  text-align: justify;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  line-height: 1.3;
+  font-family: sans-serif;
+`;
+  mainTitle.textContent = "MÁS DE 70 AÑOS";
+  container.appendChild(mainTitle);
+
+  // CONTENIDO DEL BLOQUE
+  const contenidoCuerpo = `
+    <p style="font-weight: bold; margin-bottom: 12px; color: #1f3c73;">👴 POLÍTICAS PARA ADULTOS MAYORES</p>
+    <p style="margin-bottom: 10px;"><strong>POLÍTICAS PARA SOCIOS DE 70 A 80 AÑOS:</strong></p>
+    <p style="margin-bottom: 12px;">Los socios que se encuentren en un rango <strong>de 70 a 80 años</strong> se le otorgarán los créditos de acuerdo con los siguientes criterios:</p>
+    <ul style="margin: 0; padding-left: 20px; color: #000; list-style-type: disc;">
+      <li style="margin-bottom: 8px;">No haber reflejado atrasos de más de una cuota en su último ciclo trabajado dentro de la Cooperativa Acreimex.</li>
+      <li style="margin-bottom: 0;">El monto para otorgar al integrante en este rango de edad será de acuerdo con la tabla de ciclos de cada producto, y hasta $50,000.00 (cincuenta mil pesos 00/100 M. N.).</li>
+    </ul>
+  `;
+
+  container.appendChild(crearBloqueAdultos(null, contenidoCuerpo));
+
+  // NOTA INFORMATIVA
+  const note = document.createElement("div");
+  note.style.cssText = `
+    margin-top: 12px;
+    padding: 15px;
+    background: #fff3cd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #000;
+    border: 1px solid #ffeeba;
+  `;
+  note.innerHTML = `<strong> <span style="color: #f28511;">Nota:</span></strong> Cuando la persona esté trabajando un monto mayor a $50,000.00 y requiera el mismo monto, se podrá mandar a comité de crédito, siempre y cuando no se hayan reflejado atrasos en su último crédito.`;
+  container.appendChild(note);
+
+  return { type: 'html', content: container };
+}      
+
+if (keywords.multas.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- ESTILOS DE TABLA ---
+  const tableStyle = `width:100%; border-collapse:collapse; font-family:Arial; font-size:13px; margin-top:10px; border:1px solid #000; background-color: white;`;
+  const headerStyle = `background:#1f3c73; color:white; border:1px solid #000; padding:10px; text-align:center; font-weight:bold;`;
+  const cellStyle = `border:1px solid #000; padding:8px; text-align:center; color:#000;`;
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloquePenalizaciones = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+  // TÍTULO PRINCIPAL (Diseño de Cinta Corporativa Unificado)
+const mainTitle = document.createElement("h2");
+mainTitle.style.cssText = `
+  background-color: #1f3c73; 
+  color: #ffffff; 
+  font-size: 19px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  margin-bottom: 20px; 
+  padding: 15px; 
+  border-radius: 4px; 
+  text-align: justify;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  line-height: 1.3;
+  font-family: sans-serif;
+`;
+  mainTitle.textContent = "PENALIZACIONES";
+  container.appendChild(mainTitle);
+
+  // 1. INTRODUCCIÓN Y POLÍTICAS POR CUOTAS
+  const contenidoPenalIntro = `
+    <p style="font-weight: bold; color: #dc2626; margin-bottom: 12px;"><strong>⚠️ PENALIZACIONES POR ATRASO</p>
+    <p style="font-weight: 500; margin-bottom: 15px;">Las penalizaciones se aplican según el número de cuotas vencidas acumuladas:</strong></p>
+    
+    <div style="margin-bottom: 15px; padding-left: 10px; border-left: 3px solid #f59e0b;">
+      <p style="color: #92400e; font-weight: bold; margin-bottom: 5px;">🔹 2 CUOTAS ACUMULADAS VENCIDAS</p>
+      <p>NO pueden acceder a un incremento de monto.</p>
+    </div>
+
+    <div style="padding-left: 10px; border-left: 3px solid #dc2626;">
+      <p style="color: #991b1b; font-weight: bold; margin-bottom: 8px;">🔴 4 CUOTAS ACUMULADAS VENCIDAS</p>
+      <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
+        <li style="margin-bottom: 6px;"><strong>Primero:</strong> Se solicita la reasignación de tasa del ciclo uno de acuerdo con el producto, a la <mark>Coordinación de Créditos Solidarios</mark>.</li>
+        <li style="margin-bottom: 6px;"><strong>Segundo:</strong> El monto asignado será el último monto de cuantía menor en el que no se hayan atrasado más de una cuota.</li>
+        <li><strong>Tercero:</strong> Los montos máximos a otorgar deberán tener una proporcionalidad de 50% entre los integrantes.</li>
+      </ul>
+    </div>
+  `;
+  container.appendChild(crearBloquePenalizaciones(null, contenidoPenalIntro));
+
+  // 2. TABLA DE DÍAS (CUOTAS ACUMULADAS)
+  const contenidoTabla = `
+    <p style="font-weight: bold; margin-bottom: 10px;">Tabla de dias <mark><strong>cuotas acumuladas :</strong></p>
+    <table style="${tableStyle}">
+      <thead>
+        <tr style="${headerStyle}">
+          <th>Periodicidad</th>
+          <th>2 cuotas acumuladas</th>
+          <th>3 cuotas acumuladas</th>
+          <th>4 cuotas acumuladas</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="${cellStyle}">Semanal</td><td style="${cellStyle}">7 días</td><td style="${cellStyle}">15 días</td><td style="${cellStyle}">21 días</td></tr>
+        <tr><td style="${cellStyle}">Catorcenal</td><td style="${cellStyle}">14 días</td><td style="${cellStyle}">28 días</td><td style="${cellStyle}">42 días</td></tr>
+        <tr><td style="${cellStyle}">Quincenal</td><td style="${cellStyle}">15 días</td><td style="${cellStyle}">30 días</td><td style="${cellStyle}">45 días</td></tr>
+      </tbody>
+    </table>
+  `;
+  container.appendChild(crearBloquePenalizaciones(null, contenidoTabla));
+
+ // 3. TABLA DE DÍAS (CUOTAS VENCIDAS)
+  const contenidoTablaatraso = `
+    <p style="font-weight: bold; margin-bottom: 10px;">Tabla de dias <mark><strong>cuotas vencidas:</strong></mark></p>
+    <table style="${tableStyle}">
+      <thead>
+        <tr style="${headerStyle}">
+          <th>Periodicidad</th>
+          <th>2 cuotas vencidas </th>
+          <th>3 cuotas vencidas </th>
+          <th>4 cuotas vencidas </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="${cellStyle}">Semanal</td><td style="${cellStyle}">8 días</td><td style="${cellStyle}">16 días</td><td style="${cellStyle}">22 días</td></tr>
+        <tr><td style="${cellStyle}">Catorcenal</td><td style="${cellStyle}">15 días</td><td style="${cellStyle}">29 días</td><td style="${cellStyle}">43 días</td></tr>
+        <tr><td style="${cellStyle}">Quincenal</td><td style="${cellStyle}">16 días</td><td style="${cellStyle}">31 días</td><td style="${cellStyle}">46 días</td></tr>
+      </tbody>
+    </table>
+  `;
+  container.appendChild(crearBloquePenalizaciones(null, contenidoTablaatraso));
+
+  // NOTA INFORMATIVA
+  const warningNote = document.createElement("div");
+  warningNote.style.cssText = `
+    margin-top: 15px;
+    padding: 15px;
+    background: #fff3cd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #000;
+    border: 1px solid #ffeeba;
+  `;
+  warningNote.innerHTML = `<strong> <span style="color: #f28511;">Nota importante:</span></strong> Las penalizaciones buscan incentivar el pago puntual y hacer conciencia de que existe una consecuencia en caso de atrasos.`;
+  container.appendChild(warningNote);
+
+  return { type: 'html', content: container };
+}      
+
+if (keywords.sucursal.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueSucursal = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+ // TÍTULO PRINCIPAL (Diseño de Cinta Corporativa Unificado)
+const mainTitle = document.createElement("h2");
+mainTitle.style.cssText = `
+  background-color: #1f3c73; 
+  color: #ffffff; 
+  font-size: 19px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  margin-bottom: 20px; 
+  padding: 15px; 
+  border-radius: 4px; 
+  text-align: justify;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  line-height: 1.3;
+  font-family: sans-serif;
+`;
+  mainTitle.textContent = "CAMBIO DE SUCURSAL";
+  container.appendChild(mainTitle);
+
+  // CONTENIDO DEL BLOQUE
+  const contenidoCuerpo = `
+    <p style="font-weight: 500; margin-bottom: 15px;"><strong>Para realizar el cambio de sucursal, el socio deberá cumplir con las siguientes políticas y lineamientos:</strong></p>
+    <ul style="margin: 0; padding-left: 20px; color: #000; list-style-type: disc;">
+      <li style="margin-bottom: 10px;">El socio deberá solicitar el cambio de sucursal de manera formal, indicando el motivo de la solicitud.</li>
+      <li style="margin-bottom: 10px;">El socio no deberá presentar adeudos vencidos al momento de solicitar el cambio.</li>
+      <li style="margin-bottom: 10px;">La solicitud estará sujeta a revisión y autorización por parte de la sucursal de origen y la sucursal destino.</li>
+      <li style="margin-bottom: 10px;">Se deberá verificar que el expediente del socio esté completo y actualizado.</li>
+      <li style="margin-bottom: 10px;">El cambio de sucursal podrá realizarse por cambio de domicilio, trabajo o causa debidamente justificada.</li>
+      <li style="margin-bottom: 10px;">La sucursal destino deberá contar con la capacidad operativa para recibir al socio.</li>
+      <li style="margin-bottom: 10px;">Una vez autorizado, el expediente físico y digital será transferido a la nueva sucursal.</li>
+      <li style="margin-bottom: 0;">El cambio de sucursal no modifica las condiciones del crédito, ahorro u otros productos contratados.</li>
+    </ul>
+  `;
+
+  container.appendChild(crearBloqueSucursal(null, contenidoCuerpo));
+
+  return { type: 'html', content: container };
+}
+
+if (keywords.coordinacion.some(kw => lower.includes(kw))) {
+  const container = document.createElement("div");
+
+  // --- FUNCIÓN PARA CREAR BLOQUES DE DISEÑO ---
+  const crearBloqueCoordinacion = (titulo, contenidoHtml) => {
+    const div = document.createElement("div");
+    div.style.cssText = `
+      background-color: #fdf5e8;
+      border-left: 6px solid #6495ED;
+      border-top: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    `;
+    
+    let html = "";
+    if (titulo) {
+      html += `<p style="margin-bottom: 15px; font-weight: bold; color: #1f3c73; font-size: 16px; text-transform: uppercase;">${titulo}</p>`;
+    }
+    html += `<div style="font-size: 14px; color: #000; line-height: 1.6;">${contenidoHtml}</div>`;
+    div.innerHTML = html;
+    return div;
+  };
+
+  // TÍTULO PRINCIPAL (Diseño de Cinta Corporativa Unificado)
+  const mainTitle = document.createElement("h2");
+  mainTitle.style.cssText = `
+    background-color: #1f3c73; 
+    color: #ffffff; 
+    font-size: 19px; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    margin-bottom: 20px; 
+    padding: 15px; 
+    border-radius: 4px; 
+    text-align: JUSTIFY;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    line-height: 1.3;
+    font-family: sans-serif;
+  `;
+  mainTitle.textContent = "SIMULADOR DE PAGOS - CRÉDITOS SOLIDARIOS";
+  container.appendChild(mainTitle); 
+  const closeBtn = document.createElement("button");
+        closeBtn.textContent = "✖";
+        closeBtn.style.cssText = "float:right;background:red;border:none;cursor:pointer;color:white;font-size:24px;padding:10px 15px;border-radius:6px;";
+        closeBtn.addEventListener("click", () => { container.remove(); });
+        container.appendChild(closeBtn);
+        
+        // Calculadora
+        const calcCard = document.createElement("div");
+        calcCard.style.cssText = "background:white;padding:20px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:15px;";
+       
+        // Producto
+        const prodRow = document.createElement("div");
+        prodRow.style.marginBottom = "12px";
+        prodRow.innerHTML = `<label style="display:block;margin-bottom:5px;font-weight:600;">Producto:</label>`;
+        const prodSelect = document.createElement("select");
+        prodSelect.id = "producto";
+        prodSelect.style.cssText = "width:100%;padding:8px;border-radius:6px;border:1px solid #d1d5db;";
+        prodSelect.innerHTML = `
+	<option value="poder">PODER DE  MUJER</option>
+  <option value="mixto">GRUPAL MIXTO</option>
+  <option value="preferente">GRUPAL PREFERENTE</option>
+  <option value="consumo">CONSUMO AVANCE</option>
+  <option value="impulso">IMPULSO SOLIDARIO ACR</option>
+  <option value="adicional">CRÉDITO ADICIONAL</option>
+`;
+        prodRow.appendChild(prodSelect);
+        calcCard.appendChild(prodRow);
+        
+        // Ciclo
+        const cicloRow = document.createElement("div");
+        cicloRow.style.marginBottom = "12px";
+        cicloRow.innerHTML = `<label style="display:block;margin-bottom:5px;font-weight:600;">Ciclo:</label>`;
+        const cicloSelect = document.createElement("select");
+        cicloSelect.id = "ciclo";
+        cicloSelect.style.cssText = "width:100%;padding:8px;border-radius:6px;border:1px solid #d1d5db;";
+        cicloRow.appendChild(cicloSelect);
+        calcCard.appendChild(cicloRow);
+        
+        // Monto
+        const montoRow = document.createElement("div");
+        montoRow.style.marginBottom = "12px";
+        montoRow.innerHTML = `<label style="display:block;margin-bottom:5px;font-weight:600;">Monto solicitado (por integrante $):</label>`;
+        const montoInput = document.createElement("input");
+        montoInput.type = "number";
+        montoInput.id = "monto";
+        montoInput.placeholder = "Ej: 3000";
+        montoInput.min = "0";
+        montoInput.style.cssText = "width:100%;padding:8px;border-radius:6px;border:1px solid #d1d5db;";
+        montoRow.appendChild(montoInput);
+        calcCard.appendChild(montoRow);
+        
+        // Periodicidad
+        const perRow = document.createElement("div");
+        perRow.style.marginBottom = "12px";
+        perRow.innerHTML = `<label style="display:block;margin-bottom:5px;font-weight:600;">Periodicidad:</label>`;
+        const perSelect = document.createElement("select");
+        perSelect.id = "periodicidad";
+        perSelect.style.cssText = "width:100%;padding:8px;border-radius:6px;border:1px solid #d1d5db;";
+        perRow.appendChild(perSelect);
+        calcCard.appendChild(perRow);
+        
+        // Número de pagos
+        const pagosRow = document.createElement("div");
+        pagosRow.style.marginBottom = "12px";
+        pagosRow.innerHTML = `<label style="display:block;margin-bottom:5px;font-weight:600;">Número de pagos:</label>`;
+        const pagosSelect = document.createElement("select");
+        pagosSelect.id = "numPagos";
+        pagosSelect.style.cssText = "width:100%;padding:8px;border-radius:6px;border:1px solid #d1d5db;";
+        pagosRow.appendChild(pagosSelect);
+        calcCard.appendChild(pagosRow);
+        
+        // Resultados pequeños
+        const miniResults = document.createElement("div");
+        miniResults.style.cssText = "display:flex;gap:10px;margin-top:12px;";
+        
+        const pago1000Div = document.createElement("div");
+        pago1000Div.style.flex = "1";
+        pago1000Div.innerHTML = `<label style="display:block;margin-bottom:5px;font-weight:600;font-size:13px;">Pago por cada $1,000:</label>`;
+        const pago1000Input = document.createElement("input");
+        pago1000Input.id = "pago1000";
+        pago1000Input.readOnly = true;
+        pago1000Input.style.cssText = "width:100%;padding:8px;border-radius:6px;border:1px solid #d1d5db;background:#f9fafb;";
+        pago1000Div.appendChild(pago1000Input);
+        
+        const tasaDiv = document.createElement("div");
+        tasaDiv.style.flex = "1";
+        tasaDiv.innerHTML = `<label style="display:block;margin-bottom:5px;font-weight:600;font-size:13px;">Tasa del ciclo:</label>`;
+        const tasaInput = document.createElement("input");
+        tasaInput.id = "tasaCiclo";
+        tasaInput.readOnly = true;
+        tasaInput.style.cssText = "width:100%;padding:8px;border-radius:6px;border:1px solid #d1d5db;background:#f9fafb;";
+        tasaDiv.appendChild(tasaInput);
+        
+        miniResults.appendChild(pago1000Div);
+        miniResults.appendChild(tasaDiv);
+        calcCard.appendChild(miniResults);
+        
+        // Resultado principal
+        const resultBox = document.createElement("div");
+        resultBox.id = "resultadoBox";
+        resultBox.style.cssText = "background:#f0f9ff;padding:15px;border-radius:8px;margin-top:15px;border:2px solid #bfdbfe;";
+        
+        const resLinea1 = document.createElement("div");
+        resLinea1.id = "resLinea1";
+        resLinea1.textContent = "Ingrese datos para ver resultados";
+        resLinea1.style.cssText = "font-size:14px;color:#64748b;";
+        resultBox.appendChild(resLinea1);
+        
+        const resLinea2 = document.createElement("div");
+        resLinea2.id = "resLinea2";
+        resLinea2.style.cssText = "color:#1e293b;font-weight:600;margin-top:5px;";
+        resultBox.appendChild(resLinea2);
+        
+        const resLinea3 = document.createElement("div");
+        resLinea3.id = "resLinea3";
+        resLinea3.style.cssText = "color:#1e293b;margin-top:3px;";
+        resultBox.appendChild(resLinea3);
+        
+        const errorDiv = document.createElement("div");
+        errorDiv.id = "error";
+        errorDiv.style.cssText = "display:none;color:#dc2626;margin-top:8px;font-size:13px;";
+        resultBox.appendChild(errorDiv);
+        
+        calcCard.appendChild(resultBox);
+        
+        // Botón generar ficha
+        const fichaBtn = document.createElement("button");
+        fichaBtn.textContent = "Generar ficha descriptiva";
+        fichaBtn.style.cssText = "width:100%;margin-top:10px;padding:10px;background:#2563eb;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;";
+        fichaBtn.addEventListener("mouseover", () => { fichaBtn.style.background = "#1d4ed8"; });
+        fichaBtn.addEventListener("mouseout", () => { fichaBtn.style.background = "#2563eb"; });
+        fichaBtn.addEventListener("click", () => { generarFicha(); });
+        calcCard.appendChild(fichaBtn);
+        
+        const noteCalc = document.createElement("div");
+        noteCalc.style.cssText = "margin-top:10px;padding:10px;background:#fff3cd;border-radius:6px;font-size:12px;";
+        noteCalc.innerHTML = "<strong>Nota:</strong> Si existe un 'monto por cada $1,000' en la tabla se utilizará. Si no, se usará el monto base del producto.";
+        calcCard.appendChild(noteCalc);
+
+        container.appendChild(calcCard);
+        
+        // Botones de tablas
+        const tablesSection = document.createElement("div");
+        tablesSection.style.cssText = "margin-top:20px;padding-top:15px;border-top:2px solid #e5e7eb;";
+        
+        const tablesTitle = document.createElement("h4");
+        tablesTitle.textContent = "Tablas por Ciclo";
+        tablesTitle.style.marginTop = "0";
+        tablesSection.appendChild(tablesTitle);
+        
+        const btnContainer = document.createElement("div");
+        btnContainer.style.cssText = "display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;";
+        
+        const tableButtons = [
+          { text: "Ver tabla Mixto", id: "mixto" },
+          { text: "Ver tabla Consumo", id: "consumo" },
+          { text: "Ver tabla Impulso", id: "impulso" },
+          { text: "Ver tabla Poder", id: "poder" },
+          { text: "Ver tabla Preferente", id: "preferente" }
+        ];
+        
+        tableButtons.forEach(btn => {
+          const button = document.createElement("button");
+          button.textContent = btn.text;
+          button.style.cssText = "padding:8px 16px;background:#e0f2fe;border:1px solid #0ea5e9;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.2s;";
+          button.addEventListener("mouseover", () => {
+            button.style.background = "#0ea5e9";
+            button.style.color = "white";
+          });
+          button.addEventListener("mouseout", () => {
+            button.style.background = "#e0f2fe";
+            button.style.color = "inherit";
+          });
+          button.addEventListener("click", () => { mostrarTablaCompleta(btn.id); });
+          btnContainer.appendChild(button);
+        });
+        
+        tablesSection.appendChild(btnContainer);
+        container.appendChild(tablesSection);
+        
+        const infoNote = document.createElement("div");
+        infoNote.style.cssText = "margin-top:15px;padding:12px;background:#d1ecf1;border-radius:6px;font-size:13px;";
+        infoNote.innerHTML = "<strong>💡 Importante:</strong> Esta herramienta te permite simular créditos de: Poder de Mujer, Grupal Mixto, Grupal Preferente, Consumo Avance e Impulso Solidario. Selecciona el producto, el ciclo y el monto para conocer los resultados.";
+        container.appendChild(infoNote);
+
+        const closeReminder = document.createElement("div");
+        closeReminder.style.cssText = "margin-top:15px;padding:15px;background:#f87171;border-radius:6px;font-size:16px;font-weight:600;color:white;text-align:center;";
+        closeReminder.innerHTML = "⚠️ No olvides cerrar la herramienta del simulador con el botón ✖ antes de continuar.";
+        container.appendChild(closeReminder);
+        
+        // Inicializar calculadora después de agregar al DOM
+        setTimeout(() => { initCalculadora(); }, 100);
+        
+        return { type: 'html', content: container };
+      }
+
+      return { type: 'text', content: "No entendí tu consulta 🤔. Intenta de nuevo: 💰(INGRESOS) 💵(IGUALACION DE MONTOS) 🏠(DOMICILIO) 🔄(RENOVACIONES) 📝(ADICIONAL) 👥(GRUPOS NUEVOS) 🏢(SUCURSAL) ⚠️(PENALIZACIONES) 🏘️(VIVIENDA RENTADA) 📊(RENOVACION DE SALDOS INSOLUTOS) 📁(DESEMBOLSO EN CAMPO) 📂(EXPEDIENTES) 💰(MONTOS + DE 70000) 💸(INCREMENTO SOCIOS ANTIGUOS) 👴(ADULTOS MAYORES) 🧮(CALCULADORA)?" };
+    }
+
+    function handleSend() {
+      const input = document.getElementById("messageInput");
+      const message = input.value.trim();
+      
+      if (!message) return;
+      
+      addMessage(message, true);
+      input.value = "";
+      
+      setTimeout(() => {
+        const response = getResponse(message);
+        if (response.type === 'text') {
+          addMessage(response.content, false);
+        } else {
+          addMessage(response.content, false);
+        }
+      }, 500);
+    }
+
+    document.getElementById("sendBtn").addEventListener("click", handleSend);
+    document.getElementById("messageInput").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        handleSend();
+      }
+    });
+
+    // Welcome message
+    setTimeout(() => {
+      const advisors = ["koco bot", "koco"];
+      const advisor = advisors[Math.floor(Math.random() * advisors.length)];
+      const hour = new Date().getHours();
+      let greeting = "¡Hola!";
+      if (hour >= 6 && hour < 12) greeting = "¡Buenos días! 🌅";
+      else if (hour >= 12 && hour < 18) greeting = "¡Buenas tardes! ☀️";
+      else greeting = "¡Buenas noches! 🌙";
+
+      const welcomeContainer = document.createElement("div");
+      const greetingDiv = document.createElement("div");
+      greetingDiv.style.fontWeight = "600";
+      greetingDiv.style.marginBottom = "6px";
+      greetingDiv.textContent = greeting;
+      
+      const messageDiv = document.createElement("div");
+      messageDiv.innerHTML = `Gracias por comunicarte a la Coordinación de Créditos Solidarios. Te atiende <strong>${advisor}</strong>. ¿En qué te puedo servir?`;
+      
+      welcomeContainer.appendChild(greetingDiv);
+      welcomeContainer.appendChild(messageDiv);
+      
+      addMessage(welcomeContainer, false);
+    }, 500);
+
+    // Helper functions
+    function $(id){ return document.getElementById(id); }
+    function formatNumber(n){ return Number(n).toLocaleString('en-US'); }
+
+    // Calculadora logic
+    function initCalculadora() {
+      const productoSelect = $("producto");
+      const cicloSelect = $("ciclo");
+      const montoInput = $("monto");
+      const periodicidadSelect = $("periodicidad");
+      const numPagosSelect = $("numPagos");
+      
+      if (!productoSelect || !cicloSelect) return;
+      
+      productoSelect.addEventListener("change", onProductoChange);
+      cicloSelect.addEventListener("change", onCicloChange);
+      periodicidadSelect.addEventListener("change", onPeriodicidadChange);
+      numPagosSelect.addEventListener("change", calcular);
+      montoInput.addEventListener("input", calcular);
+      
+      onProductoChange();
+    }
+
+    const productos = {
+      mixto: {
+        name: "GRUPAL MIXTO",
+        basePor1000: 68.41,
+        ciclos: [
+          { id:1, min:3000, max:10000, minDias:110, maxDias:187, periodos:["semanal","catorcenal","quincenal"], tasa:48 },
+          { id:2, min:3000, max:15000, minDias:110, maxDias:187, periodos:["semanal","catorcenal","quincenal"], tasa:48 },
+          { id:3, min:3000, max:20000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:42 },
+          { id:4, min:3000, max:30000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:42 },
+          { id:5, min:3000, max:40000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:6, min:3000, max:50000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:7, min:3000, max:60000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:30 },
+          { id:8, min:3000, max:100000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:30 }
+        ]
+      },
+      consumo: {
+        name: "CONSUMO AVANCE",
+        basePor1000: 68.41,
+        ciclos: [
+          { id:1, min:3000, max:10000, minDias:110, maxDias:187, periodos:["semanal","catorcenal","quincenal"], tasa:48 },
+          { id:2, min:3000, max:15000, minDias:110, maxDias:187, periodos:["semanal","catorcenal","quincenal"], tasa:48 },
+          { id:3, min:3000, max:20000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:42 },
+          { id:4, min:3000, max:30000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:42 },
+          { id:5, min:3000, max:40000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:6, min:3000, max:50000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:7, min:3000, max:60000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:30 },
+          { id:8, min:3000, max:100000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:30 }
+        ]
+      },
+	adicional: {
+    name: "CRÉDITO GRUPAL ADICIONAL",
+    basePor1000: 80.53,
+    ciclos: [
+      { id: 1, min: 3000, max: 5000, minDias: 1, maxDias: 187, periodos: ["mensual"], tasa: 32, maxMeses: 6 },
+      { id: 2, min: 5001, max: 15000, minDias: 1, maxDias: 365, periodos: ["mensual"], tasa: 32, maxMeses: 12 },
+      { id: 3, min: 15001, max: 25000, minDias: 1, maxDias: 547, periodos: ["mensual"], tasa: 32, maxMeses: 18 }
+    ]
+  },
+
+      impulso: {
+        name: "IMPULSO SOLIDARIO ACR",
+        basePor1000: 68.41,
+        ciclos: [
+          { id:1, min:3000, max:10000, minDias:110, maxDias:187, periodos:["semanal","catorcenal","quincenal"], tasa:48 },
+          { id:2, min:3000, max:15000, minDias:110, maxDias:187, periodos:["semanal","catorcenal","quincenal"], tasa:48 },
+          { id:3, min:3000, max:20000, minDias:110, maxDias:187, periodos:["semanal","catorcenal","quincenal"], tasa:48 },
+          { id:4, min:3000, max:30000, minDias:110, maxDias:365, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:5, min:3000, max:40000, minDias:110, maxDias:365, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:6, min:3000, max:50000, minDias:110, maxDias:365, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:7, min:3000, max:60000, minDias:110, maxDias:365, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:8, min:3000, max:70000, minDias:110, maxDias:365, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:9, min:3000, max:80000, minDias:110, maxDias:365, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:10, min:3000, max:90000, minDias:110, maxDias:365, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:11, min:3000, max:100000, minDias:110, maxDias:365, periodos:["semanal","catorcenal","quincenal"], tasa:36 }
+        ]
+      },
+      poder: {
+        name: "PODER MUJER",
+        basePor1000: 67.65,
+        ciclos: [
+          { id:1, min:3000, max:10000, minDias:110, maxDias:187, periodos:["semanal","catorcenal","quincenal"], tasa:42 },
+          { id:2, min:3000, max:15000, minDias:110, maxDias:187, periodos:["semanal","catorcenal","quincenal"], tasa:42 },
+          { id:3, min:3000, max:20000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:4, min:3000, max:30000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:36 },
+          { id:5, min:3000, max:40000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:33 },
+          { id:6, min:3000, max:50000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:33 },
+          { id:7, min:3000, max:60000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:30 },
+          { id:8, min:3000, max:100000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:30 }
+        ]
+      },
+      preferente: {
+        name: "GRUPAL PREFERENTE",
+        basePor1000: 56.28,
+        ciclos: [
+          { id:1, min:3000, max:20000, minDias:110, maxDias:115, periodos:["semanal"], tasa:24 },
+          { id:2, min:3000, max:25000, minDias:110, maxDias:115, periodos:["semanal"], tasa:24 },
+          { id:3, min:3000, max:30000, minDias:110, maxDias:171, periodos:["semanal"], tasa:24 },
+          { id:4, min:3000, max:40000, minDias:110, maxDias:171, periodos:["semanal","catorcenal","quincenal"], tasa:24 },
+          { id:5, min:3000, max:50000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:24 },
+          { id:6, min:3000, max:55000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:24 },
+          { id:7, min:3000, max:60000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:24 },
+          { id:8, min:3000, max:100000, minDias:110, maxDias:307, periodos:["semanal","catorcenal","quincenal"], tasa:24 }
+        ]
+      }
+    };
+
+    const montosPor1000 = {
+      poder:{
+        16:{periodicidad:"semanal",monto:67.65},
+        8:{periodicidad:"catorcenal",monto:135.90},
+        "8_q":{periodicidad:"quincenal",monto:136.70},
+        20:{periodicidad:"semanal",monto:55.10},
+        10:{periodicidad:"catorcenal",monto:110.65},
+        "10_q":{periodicidad:"quincenal",monto:111.40},
+        24:{periodicidad:"semanal",monto:46.70},
+        12:{periodicidad:"catorcenal",monto:93.85},
+        "12_q":{periodicidad:"quincenal",monto:94.60}
+      },
+      mixto:{
+        16:{periodicidad:"semanal",monto:68.41},
+        8:{periodicidad:"catorcenal",monto:137.39},
+        "8_q":{periodicidad:"quincenal",monto:138.27},
+        20:{periodicidad:"semanal",monto:55.78},
+        10:{periodicidad:"catorcenal",monto:112.11},
+        "10_q":{periodicidad:"quincenal",monto:112.98},
+        24:{periodicidad:"semanal",monto:47.40},
+        12:{periodicidad:"catorcenal",monto:95.26},
+        "12_q":{periodicidad:"quincenal",monto:96.11}
+      },
+      preferente:{
+        16:{periodicidad:"semanal",monto:56.28},
+        8:{periodicidad:"catorcenal",monto:112.96},
+        "8_q":{periodicidad:"quincenal",monto:113.75},
+        20:{periodicidad:"semanal",monto:45.88},
+        10:{periodicidad:"catorcenal",monto:92.20},
+        "10_q":{periodicidad:"quincenal",monto:92.98},
+        24:{periodicidad:"semanal",monto:39.02},
+        12:{periodicidad:"catorcenal",monto:78.35},
+        "12_q":{periodicidad:"quincenal",monto:79.11}
+      },
+      impulso:{
+        16:{periodicidad:"semanal",monto:68.41},
+        8:{periodicidad:"catorcenal",monto:137.39},
+        "8_q":{periodicidad:"quincenal",monto:138.27},
+        20:{periodicidad:"semanal",monto:55.78},
+        10:{periodicidad:"catorcenal",monto:112.11},
+        "10_q":{periodicidad:"quincenal",monto:112.98},
+        24:{periodicidad:"semanal",monto:47.40},
+        12:{periodicidad:"catorcenal",monto:95.26},
+        "12_q":{periodicidad:"quincenal",monto:96.11}
+      },
+
+	adicional: {
+    6: { periodicidad: "mensual", monto: 185.63 },
+    7: { periodicidad: "mensual", monto: 161.50 },
+    8: { periodicidad: "mensual", monto: 143.44 },
+    9: { periodicidad: "mensual", monto: 129.43 },
+    10: { periodicidad: "mensual", monto: 118.20 },
+    11: { periodicidad: "mensual", monto: 109.10 },
+    12: { periodicidad: "mensual", monto: 101.40 },
+    13: { periodicidad: "mensual", monto: 94.96 },
+    14: { periodicidad: "mensual", monto: 89.45 },
+    15: { periodicidad: "mensual", monto: 85.64 },
+    16: { periodicidad: "mensual", monto: 80.53 },
+    17: { periodicidad: "mensual", monto: 76.87 },
+    18: { periodicidad: "mensual", monto: 73.60 }
+  },
+      consumo:{
+        16:{periodicidad:"semanal",monto:68.41},
+        8:{periodicidad:"catorcenal",monto:137.39},
+        "8_q":{periodicidad:"quincenal",monto:138.27},
+        20:{periodicidad:"semanal",monto:55.78},
+        10:{periodicidad:"catorcenal",monto:112.11},
+        "10_q":{periodicidad:"quincenal",monto:112.98},
+        24:{periodicidad:"semanal",monto:47.40},
+        12:{periodicidad:"catorcenal",monto:95.26},
+        "12_q":{periodicidad:"quincenal",monto:96.11}
+      }
+    };
+
+function llenarCiclos(prodKey) {
+  const sel = $('ciclo');
+  sel.innerHTML = '';
+  
+  if (!productos[prodKey] || (!productos[prodKey].cycles && !productos[prodKey].ciclos)) return; 
+  const listaCiclos = productos[prodKey].ciclos || productos[prodKey].cycles;
+
+  listaCiclos.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    
+    if (prodKey === "adicional") {
+      let mesesTexto = "";
+      if (c.id === 1) mesesTexto = "6 meses";
+      if (c.id === 2) mesesTexto = "12 meses";
+      if (c.id === 3) mesesTexto = "18 meses";
+      
+      // CAMBIO AQUÍ: Cambiamos "Ciclo" por "Rango" con la estética limpia del Mixto
+      opt.text = `Rango ${c.id} — $${formatNumber(c.min)} - $${formatNumber(c.max)} — ${mesesTexto} — ${c.tasa}%`;
+    } else {
+      // Para Grupal Mixto, Poder de Mujer, etc., se sigue viendo "Ciclo"
+      const diasTexto = (c.minDias && c.maxDias) ? ` — ${c.minDias}-${c.maxDias} días` : "";
+      opt.text = `Ciclo ${c.id} — $${formatNumber(c.min)} - $${formatNumber(c.max)}${diasTexto} — ${c.tasa}%`;
+    }
+    
+    sel.appendChild(opt);
+  });
+}
+    function llenarPeriodicidades(prodKey, cicloId){
+      const sel = $('periodicidad');
+      sel.innerHTML = '';
+      const ciclo = productos[prodKey].ciclos.find(x => x.id == cicloId);
+      ciclo.periodos.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.text = p.charAt(0).toUpperCase() + p.slice(1);
+        sel.appendChild(opt);
+      });
+    }
+// ==========================================
+// 1. CONTROL DE OPCIONES Y PERIODICIDADES
+// ==========================================
+
+function generarOpcionesPagos(ciclo, periodicidad, prodKey){
+  // REGLA ESTRICTA DINÁMICA: Filtrado por Rango/Ciclo para Crédito Adicional
+  if (prodKey === "adicional" && ciclo) {
+    const rangoId = Number(ciclo.id);
+    const todosLosMeses = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+    
+    if (rangoId === 1) {
+      // Rango 1: Hasta 6 meses
+      return todosLosMeses.filter(m => m <= 6);
+    } else if (rangoId === 2) {
+      // Rango 2: Hasta 12 meses
+      return todosLosMeses.filter(m => m <= 12);
+    } else if (rangoId === 3) {
+      // Rango 3: Hasta 18 meses
+      return todosLosMeses.filter(m => m <= 18);
+    }
+    return todosLosMeses;
+  }
+
+  // Lógica original intacta para los demás productos institucionales
+  let periodDays = 7;
+  if (periodicidad === 'catorcenal') periodDays = 14;
+  if (periodicidad === 'quincenal') periodDays = 15;
+  if (periodicidad === 'mensual') periodDays = 30;
+  
+  const minPagos = Math.ceil(ciclo.minDias / periodDays);
+  const maxPagos = Math.ceil(ciclo.maxDias / periodDays);
+
+  const comunes = { semanal:[16,20,24,28,32,40], catorcenal:[8,10,12,14,20], quincenal:[8,10,12,14,20] };
+  const listaComunes = (comunes[periodicidad] || []).filter(n => n >= minPagos && n <= maxPagos);
+  if (listaComunes.length) return listaComunes;
+
+  const arr = [];
+  for (let n = minPagos; n <= maxPagos && arr.length < 20; n++) arr.push(n);
+  return arr;
+}
+
+function onProductoChange(){
+  const prod = $('producto').value;
+  llenarCiclos(prod);
+  llenarPeriodicidades(prod, $('ciclo').value);
+  onPeriodicidadChange();
+  calcular();
+}
+
+function onCicloChange(){
+  const prod = $('producto').value;
+  const ciclo = $('ciclo').value;
+  llenarPeriodicidades(prod, ciclo);
+  onPeriodicidadChange(); // Ejecuta el refresco de los pagos según el nuevo ciclo
+  calcular();
+}
+
+function onPeriodicidadChange(){
+  const prod = $('producto').value;
+  const cicloId = Number($('ciclo').value);
+  const periodo = $('periodicidad').value;
+  const ciclo = productos[prod].ciclos.find(c => c.id === cicloId);
+  
+  // Se envía el objeto ciclo completo para validar las restricciones
+  const opciones = generarOpcionesPagos(ciclo, periodo, prod);
+  const sel = $('numPagos');
+  sel.innerHTML = '';
+  
+  opciones.forEach(n => {
+    const o = document.createElement('option'); 
+    o.value = n; 
+    o.text = n + (prod === 'adicional' ? ' meses' : ' pagos'); 
+    sel.appendChild(o);
+  });
+  calcular();
+}
+
+// ==========================================
+// 2. NÚCLEO DE CÁLCULO FINANCIERO
+// ==========================================
+
+function buscarMontoPor1000(prodKey, numPagos, periodicidad){
+  const map = montosPor1000[prodKey];
+  if (!map) return null;
+  if (periodicidad === 'quincenal'){
+    const q = map[numPagos + '_q']; 
+    if (q) return q.monto;
+  }
+  const v = map[numPagos];
+  if (v && v.periodicidad === periodicidad) return v.monto;
+  return null;
+}
+
+function PAGO(tasa, nper, vp) {
+  if (tasa === 0) return vp / nper;
+  return (tasa * vp) / (1 - Math.pow(1 + tasa, -nper));
+}
+
+function diasPorPeriodicidad(periodicidad){
+  if (periodicidad === "semanal") return 7;
+  if (periodicidad === "catorcenal") return 14;
+  if (periodicidad === "quincenal") return 15;
+  if (periodicidad === "mensual") return 30;
+  return 0;
+}
+
+function calcular(){
+  const prodKey = $('producto').value;
+  const prod = productos[prodKey];
+  const cicloId = Number($('ciclo').value);
+  const ciclo = prod.ciclos.find(c => c.id === cicloId);
+
+  const errorDiv = $('error');
+  const resLinea1 = $('resLinea1');
+  const resLinea2 = $('resLinea2');
+  const resLinea3 = $('resLinea3');
+  const pago1000Input = $('pago1000');
+  const tasaCicloInput = $('tasaCiclo');
+
+  const monto = parseFloat($('monto').value);
+  
+  if (ciclo) {
+    tasaCicloInput.value = ciclo.tasa + '%';
+  }
+
+  if (!monto || monto <= 0){
+    resLinea1.textContent = 'Ingrese datos para ver resultados';
+    resLinea2.textContent = ''; 
+    resLinea3.textContent = '';
+    errorDiv.style.display = 'none';
+    pago1000Input.value = '';
+    return;
+  }
+
+  if (prodKey === "adicional") {
+    if ($('periodicidad').value !== "mensual") {
+      errorDiv.style.display = 'block';
+      errorDiv.textContent = `Este producto solo admite la periodicidad MENSUAL.`;
+      resLinea1.textContent = 'Periodicidad incorrecta';
+      resLinea2.textContent = '';
+      resLinea3.textContent = '';
+      pago1000Input.value = '';
+      return;
+    }
+  }
+
+  if (!ciclo || monto < ciclo.min || monto > ciclo.max){
+    errorDiv.style.display = 'block';
+    errorDiv.textContent = `El monto debe estar entre $${formatNumber(ciclo.min)} y $${formatNumber(ciclo.max)} (por integrante).`;
+    resLinea1.textContent = 'Monto fuera de rango'; 
+    resLinea2.textContent = ''; 
+    resLinea3.textContent = '';
+    pago1000Input.value = '';
+    return;
+  } else {
+    errorDiv.style.display = 'none';
+  }
+
+  const periodicidad = $('periodicidad').value;
+  const numPagos = Number($('numPagos').value);
+
+  let cuotaPor1000 = buscarMontoPor1000(prodKey, numPagos, periodicidad);
+  let cuota = 0;
+  let total = 0;
+
+  if (cuotaPor1000 !== null) {
+    cuota = (monto / 1000) * cuotaPor1000;
+    total = cuota * numPagos;
+  } else {
+    const tasaAnual = ciclo.tasa / 100;
+    const aplicaIVA = true;
+    const iva = 0.16;
+    const diasPeriodo = diasPorPeriodicidad(periodicidad);
+    
+    const tasaPeriodo = ((tasaAnual * (1 + (aplicaIVA ? iva : 0))) / 360) * diasPeriodo;
+    cuota = Math.abs(PAGO(tasaPeriodo, numPagos, -monto));
+    total = cuota * numPagos;
+    cuotaPor1000 = Math.abs(PAGO(tasaPeriodo, numPagos, -1000));
+  }
+
+  const garantia = monto * 0.10;
+  const cobertura = monto * 0.01;
+
+  pago1000Input.value = `$ ${cuotaPor1000.toFixed(2)} por $1,000`;
+  resLinea1.textContent = `Monto por cuota: $${formatNumber(cuota.toFixed(2))} (con IVA incluido)`;
+  
+  if(prodKey === "adicional") {
+    resLinea2.textContent = `Plazo: ${numPagos} meses [Garantía 10%: $${formatNumber(garantia.toFixed(2))} | Cobertura 1%: $${formatNumber(cobertura.toFixed(2))}]`;
+    resLinea3.textContent = `Periodicidad: ${periodicidad.toUpperCase()}. Tasa ordinaria: ${ciclo.tasa}% | Moratoria: 36%`;
+  } else {
+    resLinea2.textContent = `Número de pagos: ${numPagos}. Total a pagar: $${formatNumber(total.toFixed(2))}.`;
+    resLinea3.textContent = `Periodicidad: ${periodicidad.charAt(0).toUpperCase() + periodicidad.slice(1)}. Tasa del ciclo: ${ciclo.tasa}%.`;
+  }
+}
+// ==========================================
+// 3. GENERACIÓN DE INTERFAZ (FICHA / TABLAS)
+// ==========================================
+
+function generarFicha(){
+  const prodKey = $('producto').value;
+  const prod = productos[prodKey];
+  const cicloId = Number($('ciclo').value);
+  const ciclo = prod.ciclos.find(c => c.id === cicloId);
+  const monto = parseFloat($('monto').value);
+  
+  if (!monto || monto <= 0){ 
+    const container = document.createElement("div");
+    container.style.cssText = "padding:12px;background:#fee2e2;border-radius:8px;color:#dc2626;";
+    container.textContent = "Ingrese un monto válido";
+    addMessage(container, false);
+    return; 
+  }
+  
+  if (!ciclo || monto < ciclo.min || monto > ciclo.max){ 
+    const container = document.createElement("div");
+    container.style.cssText = "padding:12px;background:#fee2e2;border-radius:8px;color:#dc2626;";
+    container.textContent = `Monto fuera de rango. Debe estar entre $${formatNumber(ciclo.min)} y $${formatNumber(ciclo.max)}.`;
+    addMessage(container, false);
+    return; 
+  }
+  
+  const periodicidad = $('periodicidad').value;
+  const numPagos = Number($('numPagos').value);
+  
+  let cuotaPor1000 = buscarMontoPor1000(prodKey, numPagos, periodicidad);
+  let cuota = 0;
+  let total = 0;
+
+  if (cuotaPor1000 !== null) {
+    cuota = (monto / 1000) * cuotaPor1000;
+    total = cuota * numPagos;
+  } else {
+    const tasaAnual = ciclo.tasa / 100;
+    const diasPeriodo = diasPorPeriodicidad(periodicidad);
+    const tasaPeriodo = ((tasaAnual * 1.16) / 360) * diasPeriodo;
+    cuota = Math.abs(PAGO(tasaPeriodo, numPagos, -monto));
+    total = cuota * numPagos;
+    cuotaPor1000 = Math.abs(PAGO(tasaPeriodo, numPagos, -1000));
+  }
+  
+  const container = document.createElement("div");
+  container.style.cssText = "background:white;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);";
+  
+  const fichaWrapper = document.createElement("div");
+  fichaWrapper.style.cssText = "background:white; padding:15px; border-radius:10px; border:1px solid #e0e7ff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-top:15px;";
+
+  const tituloFicha = document.createElement("div");
+  tituloFicha.innerHTML = `📋 <span style="color:#3b82f6; font-size:14px; font-family: sans-serif;">Ficha Descriptiva - ${prod.name}</span>`;
+  tituloFicha.style.cssText = "margin-bottom:12px; font-weight: 500;";
+  fichaWrapper.appendChild(tituloFicha);
+  
+  const table = document.createElement("table");
+  table.style.cssText = "width:100%; border-collapse: collapse; border: 2px solid #333; font-family: sans-serif; font-size: 14px;";
+
+  const thead = document.createElement("thead");
+  thead.innerHTML = `
+    <tr style="background-color: #1e40af; color: white;">
+      <th style="padding: 10px; border: 1px solid #333; text-align: center; width: 50%;">Campo</th>
+      <th style="padding: 10px; border: 1px solid #333; text-align: center; width: 50%;">Valor</th>
+    </tr>
+  `;
+  table.appendChild(thead);
+
+  const datosFicha = [
+    ["Producto", prod.name],
+    ["Rango Solicitado", `Rango ${ciclo.id} ($${formatNumber(ciclo.min)} - $${formatNumber(ciclo.max)})`],
+    ["Monto solicitado", `$${formatNumber(monto.toFixed(2))}`],
+    ["Periodicidad", periodicidad.charAt(0).toUpperCase() + periodicidad.slice(1)],
+    [prodKey === "adicional" ? "Plazo" : "Número de pagos", prodKey === "adicional" ? `${numPagos} meses` : numPagos.toString()],
+    ["Tasa ordinaria anual", `${ciclo.tasa}%`],
+    ["Pago por $1,000", `$${cuotaPor1000.toFixed(2)}`],
+    ["Monto por cuota", `$${formatNumber(cuota.toFixed(2))}`],
+    ["Total a pagar", `$${formatNumber(total.toFixed(2))}`]
+  ];
+
+  if (prodKey === "adicional") {
+    datosFicha.push(["Tasa moratoria anual", "36%"]);
+    datosFicha.push(["Garantía requerida (10%)", `$${formatNumber((monto * 0.10).toFixed(2))}`]);
+    datosFicha.push(["Cobertura de crédito (1%)", `$${formatNumber((monto * 0.01).toFixed(2))}`]);
+  }
+
+  const tbody = document.createElement("tbody");
+  datosFicha.forEach(([campo, valor]) => {
+    const tr = document.createElement("tr");
+    tr.style.backgroundColor = "white";
+    
+    const tdCampo = document.createElement("td");
+    tdCampo.textContent = campo;
+    tdCampo.style.cssText = "padding: 8px; border: 1px solid #333; text-align: center; color: #4b5563; font-weight: bold; background: #f8fafc;";
+    
+    const tdValor = document.createElement("td");
+    tdValor.textContent = valor;
+    tdValor.style.cssText = "padding: 8px; border: 1px solid #333; text-align: center; color: #111827;";
+    
+    tr.appendChild(tdCampo);
+    tr.appendChild(tdValor);
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  fichaWrapper.appendChild(table);
+  container.appendChild(fichaWrapper);
+
+  const opcionesDiv = document.createElement("div");
+  opcionesDiv.style.cssText = "margin-top:20px;padding-top:15px;border-top:2px solid #e5e7eb;";
+  
+  const opcionesTitulo = document.createElement("div");
+  opcionesTitulo.textContent = "¿Qué deseas hacer ahora?";
+  opcionesTitulo.style.cssText = "margin-bottom:12px;font-weight:600;color:#1e293b;";
+  opcionesDiv.appendChild(opcionesTitulo);
+  
+  const botonesContainer = document.createElement("div");
+  botonesContainer.style.cssText = "display:flex;flex-wrap:wrap;gap:10px;";
+  
+  const btnTabla = document.createElement("button");
+  btnTabla.textContent = `📊 Ver tabla completa de ${prod.name}`;
+  btnTabla.style.cssText = "flex:1;min-width:200px;padding:10px 16px;background:#6495ED;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;";
+  
+  btnTabla.addEventListener("click", () => { 
+    mostrarTablaCompleta(prodKey); 
+  });
+  
+  botonesContainer.appendChild(btnTabla);
+  opcionesDiv.appendChild(botonesContainer);
+  container.appendChild(opcionesDiv);
+
+  addMessage(container, false);
+}
+
+function mostrarTablaCompleta(producto) {
+  const tablasCompletas = {
+    mixto: {
+        titulo: "TABLA DE CICLOS GRUPAL MIXTO",
+        headers: ["CICLO", "MIN", "MAX", "MIN DÍAS", "MAX DÍAS", "PERIODICIDAD", "TASA"],
+        filas: [
+            ["1", "$3,000", "$10,000", "110", "187", "Semanal/Catorcenal/Quincenal", "48%"],
+            ["2", "$3,000", "$15,000", "110", "187", "Semanal/Catorcenal/Quincenal", "48%"],
+            ["3", "$3,000", "$20,000", "110", "307", "Semanal/Catorcenal/Quincenal", "42%"],
+            ["4", "$3,000", "$30,000", "110", "307", "Semanal/Catorcenal/Quincenal", "42%"],
+            ["5", "$3,000", "$40,000", "110", "307", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["6", "$3,000", "$50,000", "110", "307", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["7", "$3,000", "$60,000", "110", "307", "Semanal/Catorcenal/Quincenal", "30%"],
+            ["8", "$3,000", "$70,000 - $100,000", "110", "307", "Semanal/Catorcenal/Quincenal", "30%"]
+        ]
+    },
+    consumo: {
+        titulo: "TABLA DE CICLOS CONSUMO AVANCE",
+        headers: ["CICLO", "MIN", "MAX", "MIN DÍAS", "MAX DÍAS", "PERIODICIDAD", "TASA"],
+        filas: [
+            ["1", "$3,000", "$10,000", "110", "187", "Semanal/Catorcenal/Quincenal", "48%"],
+            ["2", "$3,000", "$15,000", "110", "187", "Semanal/Catorcenal/Quincenal", "48%"],
+            ["3", "$3,000", "$20,000", "110", "307", "Semanal/Catorcenal/Quincenal", "42%"],
+            ["4", "$3,000", "$30,000", "110", "307", "Semanal/Catorcenal/Quincenal", "42%"],
+            ["5", "$3,000", "$40,000", "110", "307", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["6", "$3,000", "$50,000", "110", "307", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["7", "$3,000", "$60,000", "110", "307", "Semanal/Catorcenal/Quincenal", "30%"],
+            ["8", "$3,000", "$70,000 - $100,000", "110", "307", "Semanal/Catorcenal/Quincenal", "30%"]
+        ]
+    },
+    impulso: {
+        titulo: "TABLA DE CICLOS IMPULSO SOLIDARIO ACR ",
+        headers: ["CICLO", "MIN", "MAX", "PLAZO", "PERIODICIDAD", "TASA"],
+        filas: [
+            ["1", "$3,000", "$10,000", "4 MESES", "Semanal/Catorcenal/Quincenal", "48%"],
+            ["2", "$3,000", "$15,000", "4 MESES", "Semanal/Catorcenal/Quincenal", "48%"],
+            ["3", "$3,000", "$20,000", "4 MESES", "Semanal/Catorcenal/Quincenal", "48%"],
+            ["4", "$3,000", "$30,000", "12 MESES", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["5", "$3,000", "$40,000", "12 MESES", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["6", "$3,000", "$50,000", "12 MESES", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["7", "$3,000", "$60,000", "12 MESES", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["8", "$3,000", "$70,000", "12 MESES", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["9", "$3,000", "$80,000", "12 MESES", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["10", "$3,000", "$90,000", "12 MESES", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["11", "$3,000", "$100,000", "12 MESES", "Semanal/Catorcenal/Quincenal", "36%"]
+        ]
+    },
+    poder: {
+        titulo: "TABLA DE CICLOS PODER DE MUJER",
+        headers: ["CICLO", "MIN", "MAX", "MIN DÍAS", "MAX DÍAS", "PERIODICIDAD", "TASA"],
+        filas: [
+            ["1", "$3,000", "$10,000", "110", "187", "Semanal/Catorcenal/Quincenal", "42%"],
+            ["2", "$3,000", "$15,000", "110", "187", "Semanal/Catorcenal/Quincenal", "42%"],
+            ["3", "$3,000", "$20,000", "110", "307", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["4", "$3,000", "$30,000", "110", "307", "Semanal/Catorcenal/Quincenal", "36%"],
+            ["5", "$3,000", "$40,000", "110", "307", "Semanal/Catorcenal/Quincenal", "33%"],
+            ["6", "$3,000", "$50,000", "110", "307", "Semanal/Catorcenal/Quincenal", "33%"],
+            ["7", "$3,000", "$60,000", "110", "307", "Semanal/Catorcenal/Quincenal", "30%"],
+            ["8", "$3,000", "$70,000 - $100,000", "110", "307", "Semanal/Catorcenal/Quincenal", "30%"]
+        ]
+    },
+    preferente: {
+        titulo: "TABLA DE CICLOS GRUPAL PREFERENTE",
+        headers: ["CICLO", "MIN", "MAX", "MIN DÍAS", "MAX DÍAS", "PERIODICIDAD", "TASA"],
+        filas: [
+            ["1", "$3,000", "$20,000", "110", "115", "Semanal", "24%"],
+            ["2", "$3,000", "$25,000", "110", "115", "Semanal", "24%"],
+            ["3", "$3,000", "$30,000", "110", "171", "Semanal", "24%"],
+            ["4", "$3,000", "$40,000", "110", "171", "Semanal/Catorcenal/Quincenal", "24%"],
+            ["5", "$3,000", "$50,000", "110", "307", "Semanal/Catorcenal/Quincenal", "24%"],
+            ["6", "$3,000", "$55,000", "110", "307", "Semanal/Catorcenal/Quincenal", "24%"],
+            ["7", "$3,000", "$60,000", "110", "307", "Semanal/Catorcenal/Quincenal", "24%"],
+            ["8", "$3,000", "$70,000 - $100,000", "110", "307", "Semanal/Catorcenal/Quincenal", "24%"]
+        ]
+    },
+    adicional: {
+        titulo: "TABLA DE CRÉDITO ADICIONAL GRUPAL",
+        headers: ["CICLO", "MONTO MÍNIMO", "MONTO MÁXIMO", "PLAZO MÁXIMO", "PERIODICIDAD", "TASA"],
+        filas: [
+            ["1", "$3,000", "$5,000", "6 Meses", "Mensual", "32%"],
+            ["2", "$5,001", "$15,000", "12 Meses", "Mensual", "32%"],
+            ["3", "$15,001", "$25,000", "18 Meses", "Mensual", "32%"]
+        ]
+    }
+  };
+
+  const tablaData = tablasCompletas[producto];
+  if (!tablaData) return;
+
+  const wrapper = document.createElement("div");
+  wrapper.style.cssText = "background-color: #e3f2fd; padding: 20px; border-radius: 12px; font-family: sans-serif; border: 1px solid #bbdefb; margin-top: 10px;";
+
+  const tituloDoc = document.createElement("div");
+  tituloDoc.textContent = tablaData.titulo;
+  tituloDoc.style.cssText = "color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 15px; text-transform: uppercase;";
+  wrapper.appendChild(tituloDoc);
+
+  const table = document.createElement("table");
+  table.style.cssText = "width: 100%; border-collapse: collapse; border: 1.5px solid #000; background-color: #fff; font-size: 11px;";
+
+  const thead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  headerRow.style.backgroundColor = "#1e40af";
+
+  tablaData.headers.forEach(h => {
+      const th = document.createElement("th");
+      th.textContent = h;
+      th.style.cssText = "color: white; padding: 8px 5px; border: 1px solid #000; font-weight: bold; text-align: center;";
+      headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+  tablaData.filas.forEach(fila => {
+      const tr = document.createElement("tr");
+      fila.forEach(celda => {
+          const td = document.createElement("td");
+          td.textContent = celda;
+          td.style.cssText = "padding: 8px 5px; border: 1px solid #000; text-align: center; color: #000; font-weight: 500;";
+          tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+
+  wrapper.appendChild(table);
+  addMessage(wrapper, false);
+}
+
+// ==========================================
+// 4. INTEGRACIÓN CON CAPACIDADES DE ELEMENT SDK
+// ==========================================
+
+async function onConfigChange(config) {
+  const baseSize = config.font_size || defaultConfig.font_size;
+  const customFont = config.font_family || defaultConfig.font_family;
+  const baseFontStack = 'Tahoma, Geneva, Verdana, sans-serif';
+
+  const header = document.getElementById("chatHeader");
+  if (header) {
+    header.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color}, ${config.primary_action_color || defaultConfig.primary_action_color})`;
+  }
+
+  const chatMessages = document.getElementById("chatMessages");
+  if (chatMessages) {
+    chatMessages.style.background = config.secondary_surface_color || defaultConfig.secondary_surface_color;
+  }
+
+  const userMessages = document.querySelectorAll(".user-message");
+  userMessages.forEach(msg => {
+    msg.style.background = config.primary_action_color || defaultConfig.primary_action_color;
+  });
+
+  const botMessages = document.querySelectorAll(".bot-message");
+  botMessages.forEach(msg => {
+    msg.style.background = config.secondary_action_color || defaultConfig.secondary_action_color;
+    msg.style.borderColor = config.secondary_surface_color || defaultConfig.secondary_surface_color;
+    msg.style.color = config.text_color || defaultConfig.text_color;
+    msg.style.maxWidth = "100%";
+    msg.style.width = "100%";
+  });
+
+  const sendBtn = document.getElementById("sendBtn");
+  if (sendBtn) {
+    sendBtn.style.background = config.primary_action_color || defaultConfig.primary_action_color;
+    sendBtn.style.fontSize = `${baseSize * 0.9375}px`;
+  }
+
+  const input = document.getElementById("messageInput");
+  if (input) {
+    input.style.color = config.text_color || defaultConfig.text_color;
+    input.placeholder = config.input_placeholder || defaultConfig.input_placeholder;
+  }
+
+  document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+  document.body.style.fontSize = `${baseSize}px`;
+
+  const title = document.getElementById("chatTitle");
+  if (title) title.style.fontSize = `${baseSize * 1.5}px`;
+  if (title && config.chat_title) title.textContent = config.chat_title;
+
+  const subtitle = document.getElementById("chatSubtitle");
+  if (subtitle) subtitle.style.fontSize = `${baseSize * 0.9375}px`;
+  if (subtitle && config.chat_subtitle) subtitle.textContent = config.chat_subtitle;
+
+  const headerMessage = document.getElementById("headerMessage");
+  if (headerMessage) headerMessage.style.fontSize = `${baseSize * 0.9375}px`;
+  if (headerMessage && config.header_message) headerMessage.textContent = config.header_message;
+
+  const footerText = document.getElementById("footerText");
+  if (footerText) footerText.style.fontSize = `${baseSize * 0.875}px`;
+  if (footerText && config.footer_text) footerText.textContent = config.footer_text;
+}
+
+if (window.elementSdk) {
+  window.elementSdk.init({
+    defaultConfig,
+    onConfigChange,
+    mapToCapabilities: (config) => ({
+      recolorables: [
+        {
+          get: () => config.background_color || defaultConfig.background_color,
+          set: (value) => {
+            config.background_color = value;
+            window.elementSdk.setConfig({ background_color: value });
+          }
+        },
+        {
+          get: () => config.secondary_surface_color || defaultConfig.secondary_surface_color,
+          set: (value) => {
+            config.secondary_surface_color = value;
+            window.elementSdk.setConfig({ secondary_surface_color: value });
+          }
+        },
+        {
+          get: () => config.text_color || defaultConfig.text_color,
+          set: (value) => {
+            config.text_color = value;
+            window.elementSdk.setConfig({ text_color: value });
+          }
+        },
+        {
+          get: () => config.primary_action_color || defaultConfig.primary_action_color,
+          set: (value) => {
+            config.primary_action_color = value;
+            window.elementSdk.setConfig({ primary_action_color: value });
+          }
+        },
+        {
+          get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+          set: (value) => {
+            config.secondary_action_color = value;
+            window.elementSdk.setConfig({ secondary_action_color: value });
+          }
+        }
+      ],
+      borderables: [],
+      fontEditable: {
+        get: () => config.font_family || defaultConfig.font_family,
+        set: (value) => {
+          config.font_family = value;
+          window.elementSdk.setConfig({ font_family: value });
+        }
+      },
+      fontSizeable: {
+        get: () => config.font_size || defaultConfig.font_size,
+        set: (value) => {
+          config.font_size = value;
+          window.elementSdk.setConfig({ font_size: value });
+        }
+      }
+    }),
+    mapToEditPanelValues: (config) => new Map([
+      ["chat_title", config.chat_title || defaultConfig.chat_title],
+      ["chat_subtitle", config.chat_subtitle || defaultConfig.chat_subtitle],
+      ["header_message", config.header_message || defaultConfig.header_message],
+      ["footer_text", config.footer_text || defaultConfig.footer_text],
+      ["input_placeholder", config.input_placeholder || defaultConfig.input_placeholder]
+    ])
+  });
+}
+
+  </script>
+ <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAA8pgcb4RWWcA7stNmqnrAgfpgTZnlo_c",
+      authDomain: "chat-solidario.firebaseapp.com",
+      projectId: "chat-solidario",
+      storageBucket: "chat-solidario.firebasestorage.app",
+      messagingSenderId: "135166703419",
+      appId: "1:135166703419:web:a68dd015787ee60894a91e"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // CONTROL DE ACCESO
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById('pantalla-login').style.display = 'none';
+        document.getElementById('contenido-pwa').style.display = 'block';
+      } else {
+        document.getElementById('pantalla-login').style.display = 'flex';
+        document.getElementById('contenido-pwa').style.display = 'none';
+      }
+    });
+
+    // BOTÓN LOGUEAR
+    document.getElementById('btnEntrar').onclick = () => {
+      const email = document.getElementById('loginEmail').value;
+      const pass = document.getElementById('loginPass').value;
+      signInWithEmailAndPassword(auth, email, pass).catch(err => alert("Acceso denegado"));
+    };
+
+    // BOTÓN SALIR
+    document.getElementById('btnSalir').onclick = () => signOut(auth);
+  </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/ACREIMEX-CHAT/service-worker.js")
+      .then(reg => console.log("SW cargado con éxito"));
+    }
+  </script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/ACREIMEX-CHAT/service-worker.js")
+    .then(registration => {
+
+      registration.onupdatefound = () => {
+        const newWorker = registration.installing;
+
+        newWorker.onstatechange = () => {
+          if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+
+            const updateBanner = document.createElement("div");
+            updateBanner.innerHTML = `
+              <div style="
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #0f172a;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 12px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+                z-index: 9999;
+                font-family: sans-serif;
+              ">
+                🔄 Nueva versión disponible
+                <button id="updateBtn" style="
+                  margin-left: 15px;
+                  padding: 6px 12px;
+                  border: none;
+                  background: #22c55e;
+                  color: white;
+                  border-radius: 8px;
+                  cursor: pointer;
+                ">Actualizar</button>
+              </div>
+            `;
+            document.body.appendChild(updateBanner);
+
+            document.getElementById("updateBtn").addEventListener("click", () => {
+              window.location.reload();
+            });
+          }
+        };
+      };
+    });
+}
+</script>
+<script src="app.js"></script>
+</body>
+
+</html>
+
+
