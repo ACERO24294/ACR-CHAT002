@@ -5,7 +5,8 @@ const STATIC_ASSETS = [
   "/CHAT-ACR0/",
   "/CHAT-ACR0/index.html",
   "/CHAT-ACR0/icon-192.png",
-  "/CHAT-ACR0/icon-512.png"
+  "/CHAT-ACR0/icon-512.png",
+  "/CHAT-ACR0/app.js"
 ];
 
 // 🔹 INSTALL
