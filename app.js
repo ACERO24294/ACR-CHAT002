@@ -1,164 +1,76 @@
-document.addEventListener("DOMContentLoaded", () => {
-    if (!window.PublicKeyCredential) {
-        // Si el navegador no lo soporta, ocultamos las opciones biométricas
-        document.getElementById('btnHuellaLogin').style.display = 'none';
-        document.getElementById('btnHuellaVincular').style.display = 'none';
-    }
-});
-
-// Configura la URL base de tu servidor privado
-const API_URL = "https://tu-servidor-privado.com/api";
-
 // =========================================================
-// 1. REGISTRAR / VINCULAR HUELLA (Usuario ya logueado o ingresando su correo)
+// SIMULACIÓN DE REGISTRO (Prueba local sin API)
 // =========================================================
 async function procesarRegistroHuella() {
     const email = document.getElementById('loginEmail').value;
-    if (!email) {
-        alert("Por favor, ingresa tu Usuario o Correo primero para poder vincular tu huella.");
-        return;
-    }
+    if (!email) return alert("Por favor, ingresa tu correo primero.");
 
     try {
-        // A. Obtener parámetros desde tu servidor privado
-        const res = await fetch(`${API_URL}/registro/opciones`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email })
-        });
-        const opcionesServer = await res.json();
+        alert("Simulando petición al servidor... Ahora se abrirá el lector nativo.");
 
-        // B. Convertir los strings Base64 del servidor a binario para el navegador
-        opcionesServer.challenge = base64ToBuffer(opcionesServer.challenge);
-        opcionesServer.user.id = base64ToBuffer(opcionesServer.user.id);
-
-        // C. Encender el lector de huellas nativo del dispositivo
-        const credencialNativa = await navigator.credentials.create({
-            publicKey: opcionesServer
-        });
-
-        // D. Preparar la estructura de datos para enviarla por JSON
-        const credencialParaEnviar = {
-            id: credencialNativa.id,
-            rawId: bufferToBase64(credencialNativa.rawId),
-            type: credencialNativa.type,
-            response: {
-                attestationObject: bufferToBase64(credencialNativa.response.attestationObject),
-                clientDataJSON: bufferToBase64(credencialNativa.response.clientDataJSON)
-            }
+        // Creamos opciones falsas exactamente como las mandaría un servidor
+        const opcionesPrueba = {
+            challenge: Uint8Array.from("desafio_de_prueba_1234567890_koco", c => c.charCodeAt(0)),
+            rp: { name: "Koco Acreimex", id: window.location.hostname },
+            user: {
+                id: Uint8Array.from("id_usuario_falso_99", c => c.charCodeAt(0)),
+                name: email,
+                displayName: email.split('@')[0]
+            },
+            pubKeyCredParams: [{ type: "public-key", alg: -7 }], // ES256
+            authenticatorSelection: {
+                authenticatorAttachment: "platform", // Fuerza huella/rostro del dispositivo
+                userVerification: "required"
+            },
+            timeout: 60000
         };
 
-        // E. Enviar la credencial al servidor para guardarla en la base de datos
-        const resultadoFinal = await fetch(`${API_URL}/registro/verificar`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email, credencial: credencialParaEnviar })
+        // ¡ESTO ACTIVA EL SENSOR DE TU TELÉFONO/PC!
+        const credencialNativa = await navigator.credentials.create({
+            publicKey: opcionesPrueba
         });
 
-        if (resultadoFinal.ok) {
-            alert("¡Perfecto! Tu huella digital ha sido enlazada con éxito a este dispositivo.");
-        } else {
-            alert("El servidor no pudo validar el registro biométrico.");
-        }
+        console.log("¡Éxito! El sensor generó la credencial:", credencialNativa);
+        alert("¡Excelente! Tu dispositivo respondió correctamente y leyó tu huella. En un entorno real, estos datos se enviarían a tu API.");
 
     } catch (error) {
-        console.error("Error en registro:", error);
-        alert("No se pudo registrar la huella o se canceló el proceso.");
+        console.error("Error en la prueba:", error);
+        alert("El lector se abrió, pero el proceso fue cancelado o falló: " + error.message);
     }
 }
 
 // =========================================================
-// 2. INICIAR SESIÓN DIRECTO CON LA HUELLA DIGITAL
+// SIMULACIÓN DE LOGIN (Prueba local sin API)
 // =========================================================
 async function procesarLoginHuella() {
     const email = document.getElementById('loginEmail').value;
-    if (!email) {
-        alert("Por favor, escribe tu Usuario o Correo para buscar tus datos biométricos.");
-        return;
-    }
+    if (!email) return alert("Por favor, ingresa tu correo primero.");
 
     try {
-        // A. Solicitar desafío de autenticación al servidor privado
-        const res = await fetch(`${API_URL}/login/opciones`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email })
-        });
-        const opcionesServer = await res.json();
+        alert("Simulando verificación... El teléfono te pedirá tu huella.");
 
-        // B. Traducir datos a binario
-        opcionesServer.challenge = base64ToBuffer(opcionesServer.challenge);
-        if (opcionesServer.allowCredentials) {
-            opcionesServer.allowCredentials.forEach(cred => {
-                cred.id = base64ToBuffer(cred.id);
-            });
-        }
-
-        // C. Levantar el escáner de huella/rostro para firmar el desafío
-        const assertionNativa = await navigator.credentials.get({
-            publicKey: opcionesServer
-        });
-
-        // D. Convertir la firma a texto JSON
-        const assertionParaEnviar = {
-            id: assertionNativa.id,
-            rawId: bufferToBase64(assertionNativa.rawId),
-            type: assertionNativa.type,
-            response: {
-                authenticatorData: bufferToBase64(assertionNativa.response.authenticatorData),
-                clientDataJSON: bufferToBase64(assertionNativa.response.clientDataJSON),
-                signature: bufferToBase64(assertionNativa.response.signature),
-                userHandle: assertionNativa.response.userHandle ? bufferToBase64(assertionNativa.response.userHandle) : null
-            }
+        const opcionesAutenticacionPrueba = {
+            challenge: Uint8Array.from("desafio_login_prueba_987654321", c => c.charCodeAt(0)),
+            userVerification: "required",
+            timeout: 60000
+            // Nota: No incluimos 'allowCredentials' para que el dispositivo te deje 
+            // usar cualquier huella/rostro registrado en el sistema operativo.
         };
 
-        // E. Enviar la firma a validar en tu servidor privado
-        const resultadoLogin = await fetch(`${API_URL}/login/verificar`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email, assertion: assertionParaEnviar })
+        // ¡ESTO ACTIVA EL SENSOR PARA LOGUEARTE!
+        const assertionNativa = await navigator.credentials.get({
+            publicKey: opcionesAutenticacionPrueba
         });
 
-        if (resultadoLogin.ok) {
-            const datosSesion = await resultadoLogin.json();
-            
-            // Guardar token de sesión enviado por tu servidor privado
-            localStorage.setItem('token_koco', datosSesion.token);
-            
-            // --- FLUJO DE ENTRADA A KOCO ACREIMEX ---
-            // Ocultamos la pantalla de login y mostramos la interfaz del chat tal como lo hace tu app
-            document.getElementById('pantalla-login').style.display = 'none';
-            document.getElementById('contenido-pwa').style.display = 'block';
-            
-            // Si tienes una función inicializadora del chat, la ejecutas aquí:
-            // inicializarChatKoco();
-        } else {
-            alert("Acceso denegado: Huella digital no reconocida.");
-        }
+        console.log("¡Éxito! Firma de huella generada:", assertionNativa);
+        alert("¡Huella reconocida perfectamente en el dispositivo!");
+
+        // --- SIMULAMOS LA ENTRADA A TU CHAT KOCO ---
+        document.getElementById('pantalla-login').style.display = 'none';
+        document.getElementById('contenido-pwa').style.display = 'block';
 
     } catch (error) {
-        console.error("Error en login:", error);
-        alert("Error de autenticación biométrica.");
+        console.error("Error en la prueba de login:", error);
+        alert("Error al leer la huella: " + error.message);
     }
-}
-
-// =========================================================
-// 3. AUXILIARES DE CONVERSIÓN (Mantener intactos al final)
-// =========================================================
-function base64ToBuffer(str) {
-    const decodificado = atob(str.replace(/-/g, '+').replace(/_/g, '/'));
-    const buffer = new Uint8Array(decodificado.length);
-    for (let i = 0; i < decodificado.length; i++) {
-        buffer[i] = decodificado.charCodeAt(i);
-    }
-    return buffer.buffer;
-}
-
-function bufferToBase64(buffer) {
-    const bytes = new Uint8Array(buffer);
-    let stringBinario = '';
-    for (let i = 0; i < bytes.byteLength; i++) {
-        stringBinario += String.fromCharCode(bytes[i]);
-    }
-    return btoa(stringBinario).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
