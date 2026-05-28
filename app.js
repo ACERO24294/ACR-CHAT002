@@ -1,76 +1,90 @@
 // =========================================================
-// SIMULACIÓN DE REGISTRO (Prueba local sin API)
+// SIMULACIÓN DE REGISTRO CORREGIDA PARA GITHUB PAGES
 // =========================================================
 async function procesarRegistroHuella() {
     const email = document.getElementById('loginEmail').value;
     if (!email) return alert("Por favor, ingresa tu correo primero.");
 
     try {
-        alert("Simulando petición al servidor... Ahora se abrirá el lector nativo.");
+        // Creamos un ID de usuario puramente numérico y aleatorio (en binario)
+        // A veces los strings planos en user.id causan conflicto en producción
+        const userIdBuffer = new Uint8Array(16);
+        crypto.getRandomValues(userIdBuffer);
 
-        // Creamos opciones falsas exactamente como las mandaría un servidor
+        // Creamos un challenge criptográfico real de 32 bytes aleatorios
+        const challengeBuffer = new Uint8Array(32);
+        crypto.getRandomValues(challengeBuffer);
+
         const opcionesPrueba = {
-            challenge: Uint8Array.from("desafio_de_prueba_1234567890_koco", c => c.charCodeAt(0)),
-            rp: { name: "Koco Acreimex", id: window.location.hostname },
+            challenge: challengeBuffer,
+            rp: { 
+                name: "Koco Acreimex", 
+                id: window.location.hostname // Requisito estricto del navegador
+            },
             user: {
-                id: Uint8Array.from("id_usuario_falso_99", c => c.charCodeAt(0)),
+                id: userIdBuffer,
                 name: email,
                 displayName: email.split('@')[0]
             },
-            pubKeyCredParams: [{ type: "public-key", alg: -7 }], // ES256
+            pubKeyCredParams: [
+                { type: "public-key", alg: -7 },  // ES256
+                { type: "public-key", alg: -257 } // RS256 (Por si pruebas en Windows Hello)
+            ], 
             authenticatorSelection: {
-                authenticatorAttachment: "platform", // Fuerza huella/rostro del dispositivo
+                authenticatorAttachment: "platform", // Fuerza el lector del dispositivo
                 userVerification: "required"
             },
             timeout: 60000
         };
 
-        // ¡ESTO ACTIVA EL SENSOR DE TU TELÉFONO/PC!
+        // Levantar el sensor nativo
         const credencialNativa = await navigator.credentials.create({
             publicKey: opcionesPrueba
         });
 
-        console.log("¡Éxito! El sensor generó la credencial:", credencialNativa);
-        alert("¡Excelente! Tu dispositivo respondió correctamente y leyó tu huella. En un entorno real, estos datos se enviarían a tu API.");
+        console.log("¡Éxito! Credencial generada:", credencialNativa);
+        alert("¡Excelente! Tu dispositivo respondió correctamente y leyó tu huella en GitHub Pages.");
 
     } catch (error) {
-        console.error("Error en la prueba:", error);
-        alert("El lector se abrió, pero el proceso fue cancelado o falló: " + error.message);
+        console.error("Error detallado en registro:", error);
+        alert("Error en el lector: " + error.name + " - " + error.message);
     }
 }
 
 // =========================================================
-// SIMULACIÓN DE LOGIN (Prueba local sin API)
+// SIMULACIÓN DE LOGIN CORREGIDA PARA GITHUB PAGES
 // =========================================================
 async function procesarLoginHuella() {
     const email = document.getElementById('loginEmail').value;
     if (!email) return alert("Por favor, ingresa tu correo primero.");
 
     try {
-        alert("Simulando verificación... El teléfono te pedirá tu huella.");
+        // Generamos un challenge aleatorio real para pasar los filtros del navegador
+        const challengeBuffer = new Uint8Array(32);
+        crypto.getRandomValues(challengeBuffer);
 
         const opcionesAutenticacionPrueba = {
-            challenge: Uint8Array.from("desafio_login_prueba_987654321", c => c.charCodeAt(0)),
+            challenge: challengeBuffer,
+            rpId: window.location.hostname, // Agregamos el rpId explícito para el login
             userVerification: "required",
             timeout: 60000
-            // Nota: No incluimos 'allowCredentials' para que el dispositivo te deje 
-            // usar cualquier huella/rostro registrado en el sistema operativo.
+            // Dejamos allowCredentials vacío para que permita usar cualquier huella del dispositivo
         };
 
-        // ¡ESTO ACTIVA EL SENSOR PARA LOGUEARTE!
+        // Activar el sensor para loguearse
         const assertionNativa = await navigator.credentials.get({
             publicKey: opcionesAutenticacionPrueba
         });
 
-        console.log("¡Éxito! Firma de huella generada:", assertionNativa);
-        alert("¡Huella reconocida perfectamente en el dispositivo!");
+        console.log("¡Éxito! Firma generada:", assertionNativa);
+        alert("¡Huella reconocida perfectamente!");
 
-        // --- SIMULAMOS LA ENTRADA A TU CHAT KOCO ---
+        // Redirección simulada al contenido de Koco
         document.getElementById('pantalla-login').style.display = 'none';
         document.getElementById('contenido-pwa').style.display = 'block';
 
     } catch (error) {
-        console.error("Error en la prueba de login:", error);
-        alert("Error al leer la huella: " + error.message);
+        console.error("Error detallado en login:", error);
+        alert("Error al leer la huella: " + error.name + " - " + error.message);
     }
 }
