@@ -295,17 +295,8 @@ th {
     <input type="password" id="loginPass" placeholder="Contraseña" autocomplete="current-password">
     
     <button class="btn-entrar" id="btnEntrar" onclick="simularLogin()">Iniciar Sesión</button>
-    
-    <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
-      <button class="btn-biometrico" id="btnHuellaLogin" onclick="procesarLoginHuella()" style="background-color: #0284c7; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <span>☝️</span> Entrar con Huella Digital
-      </button>
-      
-      <button class="btn-vincular" id="btnHuellaVincular" onclick="procesarRegistroHuella()" style="background-color: transparent; color: #64748b; border: 1px dashed #cbd5e1; padding: 8px; border-radius: 6px; font-size: 13px; cursor: pointer;">
-        ⚙️ Vincular mi huella a este dispositivo
-      </button>
-    </div>
-    <p style="margin-top: 25px; font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">
+         
+     <p style="margin-top: 25px; font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">
       Sistema propiedad de Créditos Solidarios
     </p>
   </div>
@@ -343,43 +334,234 @@ th {
     </div>
   </div>
 </div>
- 
+
 <script>
-    function simularLogin() {
-      const email = document.getElementById('loginEmail').value;
-      const pass = document.getElementById('loginPass').value;
-      
-      if(email !== "" && pass !== "") {
-        // Transición suave
-        const login = document.getElementById('pantalla-login');
-        login.style.transition = "opacity 0.5s";
-        login.style.opacity = "0";
-        
-        setTimeout(() => {
-            login.style.display = 'none';
-            document.getElementById('contenido-pwa').style.display = 'block';
-        }, 500);
-      } else {
-        alert("Por favor, llena los campos");
-      }
-    }
-</script>
-<script>
-/* --- SISTEMA GLOBAL DE SEGUIMIENTO Y DESPEDIDA KOCO --- */
+/* =========================================================
+   1. CONFIGURACIÓN E INICIALIZACIÓN DE VARIABLES
+   ========================================================= */
+const URL_GOOGLE_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbykHzrsXrbwSfq5h2q7KlE-zsqamE0f8LcO-mqdV3QlF6jcWUXtMEh2n8rKgBhaohHE/exec";
+
 let timerSeguimiento;
 let timerInactividad;
+let timerAdvertenciaInactividad;
 
-// 1. Motor de Mensajes Aleatorios por Horario
+const TIEMPO_TOTAL_MS = 30 * 1000; 
+const TIEMPO_AVISO_MS = 20 * 1000;
+
+
+/* =========================================================
+   2. CONTROL DE SESIÓN Y EXTRACCIÓN DE USUARIO
+   ========================================================= */
+// Extrae todo lo que está antes del '@' (ej. 'pruebas' de 'pruebas@solidarios.mx')
+function extraerUsuarioDesdeEmail(emailOUser) {
+  if (!emailOUser || typeof emailOUser !== "string") return "";
+  const partes = emailOUser.split('@');
+  return partes[0].trim();
+}
+
+function simularLogin() {
+  const emailInput = document.getElementById('loginEmail');
+  const passInput = document.getElementById('loginPass');
+  
+  const email = emailInput ? emailInput.value : "";
+  const pass = passInput ? passInput.value : "";
+  
+  if (email !== "" && pass !== "") {
+    // Guarda inmediatamente la parte antes del '@'
+    const usuarioLimpio = extraerUsuarioDesdeEmail(email);
+    sessionStorage.setItem("nombreUsuario", usuarioLimpio);
+
+    if (typeof firebase !== "undefined" && firebase.auth()) {
+      firebase.auth().signInWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          if (user && user.email) {
+            sessionStorage.setItem("nombreUsuario", extraerUsuarioDesdeEmail(user.email));
+          }
+          iniciarTransicionPWA();
+        })
+        .catch((error) => {
+          console.warn("Error Firebase Auth, continuando sesión local:", error);
+          iniciarTransicionPWA();
+        });
+    } else {
+      iniciarTransicionPWA();
+    }
+  } else {
+    alert("Por favor, llena los campos");
+  }
+}
+
+function iniciarTransicionPWA() {
+  const login = document.getElementById('pantalla-login');
+  if (login) {
+    login.style.transition = "opacity 0.5s";
+    login.style.opacity = "0";
+    
+    setTimeout(() => {
+        login.style.display = 'none';
+        const pwa = document.getElementById('contenido-pwa');
+        if (pwa) pwa.style.display = 'block';
+        iniciarMonitoreoInactividad();
+    }, 500);
+  }
+}
+
+function cerrarSesionExpirada() {
+  ocultarModalAdvertencia();
+  localStorage.removeItem("lastActiveTime");
+  sessionStorage.clear();
+  
+  alert("Tu sesión ha expirado por inactividad. Por favor, ingresa de nuevo.");
+  
+  const pwa = document.getElementById('contenido-pwa');
+  if (pwa) pwa.style.display = 'none';
+  
+  const login = document.getElementById('pantalla-login');
+  if (login) {
+    login.style.opacity = "1";
+    login.style.display = 'block';
+  }
+}
+
+
+/* =========================================================
+   3. TEMPORIZADOR DE INACTIVIDAD
+   ========================================================= */
+function reiniciarTimerInactividad() {
+  clearTimeout(timerAdvertenciaInactividad);
+  clearTimeout(timerInactividad);
+
+  localStorage.setItem("lastActiveTime", Date.now().toString());
+
+  timerAdvertenciaInactividad = setTimeout(mostrarModalAdvertencia, TIEMPO_AVISO_MS);
+  timerInactividad = setTimeout(cerrarSesionExpirada, TIEMPO_TOTAL_MS);
+}
+
+function mostrarModalAdvertencia() {
+  let modal = document.getElementById("modal-expiracion");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "modal-expiracion";
+    modal.innerHTML = `
+      <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+        <div style="background: white; padding: 20px; border-radius: 12px; max-width: 320px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+          <h3 style="margin-top:0; color: #333;">¿Sigues ahí?</h3>
+          <p style="color: #666;">Tu sesión se cerrará pronto por falta de actividad.</p>
+          <button id="btn-extender-sesion" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer;">Continuar Sesión</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById("btn-extender-sesion").addEventListener("click", () => {
+      ocultarModalAdvertencia();
+      reiniciarTimerInactividad();
+    });
+  } else {
+    modal.style.display = "block";
+  }
+}
+
+function ocultarModalAdvertencia() {
+  const modal = document.getElementById("modal-expiracion");
+  if (modal) modal.style.display = "none";
+}
+
+function evaluarTiempoEnSegundoPlano() {
+  const ultimaActividad = parseInt(localStorage.getItem("lastActiveTime"), 10);
+  if (ultimaActividad) {
+    const tiempoTranscurrido = Date.now() - ultimaActividad;
+
+    if (tiempoTranscurrido >= TIEMPO_TOTAL_MS) {
+      cerrarSesionExpirada();
+    } else if (tiempoTranscurrido >= TIEMPO_AVISO_MS) {
+      mostrarModalAdvertencia();
+      const tiempoRestante = TIEMPO_TOTAL_MS - tiempoTranscurrido;
+      timerInactividad = setTimeout(cerrarSesionExpirada, tiempoRestante);
+    } else {
+      reiniciarTimerInactividad();
+    }
+  }
+}
+
+function iniciarMonitoreoInactividad() {
+  const eventos = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+  eventos.forEach(evento => {
+    window.addEventListener(evento, reiniciarTimerInactividad, true);
+  });
+  evaluarTiempoEnSegundoPlano();
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    evaluarTiempoEnSegundoPlano();
+  } else {
+    localStorage.setItem("lastActiveTime", Date.now().toString());
+  }
+});
+
+
+/* =========================================================
+   4. REGISTRO EN GOOGLE SHEETS
+   ========================================================= */
+async function registrarEnGoogleSheets(mensajeCliente, respuestaBot) {
+  let nombreUsuario = sessionStorage.getItem("nombreUsuario");
+
+  // Si no se encuentra en sessionStorage, consulta directamente a Firebase
+  if ((!nombreUsuario || nombreUsuario === "invitado") && typeof firebase !== "undefined" && firebase.auth()) {
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser && currentUser.email) {
+      nombreUsuario = extraerUsuarioDesdeEmail(currentUser.email);
+      sessionStorage.setItem("nombreUsuario", nombreUsuario);
+    }
+  }
+
+  // Fallback directo leyendo el input de email
+  if (!nombreUsuario || nombreUsuario === "invitado") {
+    const inputEmail = document.getElementById('loginEmail');
+    if (inputEmail && inputEmail.value) {
+      nombreUsuario = extraerUsuarioDesdeEmail(inputEmail.value);
+      if (nombreUsuario) sessionStorage.setItem("nombreUsuario", nombreUsuario);
+    }
+  }
+
+  nombreUsuario = nombreUsuario || "invitado";
+  const ahora = new Date();
+
+  // Envío a Google Sheets
+  const params = new URLSearchParams();
+  params.append("fechaHoraLegible", ahora.toLocaleString('es-MX'));
+  params.append("nombreUsuario", nombreUsuario);
+  params.append("mensajeUsuario", mensajeCliente);
+  params.append("respuestaBot", respuestaBot);
+
+  try {
+    await fetch(URL_GOOGLE_APPS_SCRIPT, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString()
+    });
+    console.log("Consulta registrada para el usuario:", nombreUsuario);
+  } catch (error) {
+    console.error("Error al enviar registro:", error);
+  }
+}
+
+
+/* =========================================================
+   5. SEGUIMIENTO Y DESPEDIDAS KOCO
+   ========================================================= */
 function obtenerDespedidaFinal() {
     const h = new Date().getHours();
-    const morning = ["🌅 Fue un gusto atenderte,que  tengas  un bendecido dia🤝"];
-    const afternoon = ["☀️ Fue un gusto atenderte,que  tengas  un  bendecido dia 🤝"];
-    const night = ["🌙Fue un gusto atenderte,que  tengas un  bendecido dia 🤝"];
+    const morning = ["🌅 Fue un gusto atenderte,que tengas un bendecido dia🤝"];
+    const afternoon = ["☀️ Fue un gusto atenderte,que tengas un bendecido dia 🤝"];
+    const night = ["🌙Fue un gusto atenderte,que tengas un bendecido dia 🤝"];
     let messages = (h >= 6 && h < 12) ? morning : (h >= 12 && h < 18) ? afternoon : night;
     return messages[Math.floor(Math.random() * messages.length)];
 }
 
-// 2. Función de Inyección de Mensajes (Bot)
 function botEscribeMensaje(texto) {
     const container = document.querySelector('.chat-messages');
     if(!container) return;
@@ -390,19 +572,20 @@ function botEscribeMensaje(texto) {
     container.scrollTop = container.scrollHeight;
 }
 
-// 3. Activador de Seguimiento (Pregunta "¿Algo más?")
 function activarSeguimientoGlobal() {
     clearTimeout(timerSeguimiento);
     clearTimeout(timerInactividad);
 
     timerSeguimiento = setTimeout(() => {
         botEscribeMensaje("¿Hay algo más en lo que te pueda servir? 😊");
-
-    }, 40000); // 40 segundos después de cualquier respuesta del bot
+    }, 40000);
 }
 
-// 4. Interceptor de Respuestas del Usuario (Detección de "No/Gracias")
 function procesarEntradaUsuario(valor) {
+    if (!valor || valor.trim() === "") return false;
+
+    reiniciarTimerInactividad();
+
     const lower = valor.toLowerCase().trim();
     const despedidas = ["no", "gracias", "nada", "ninguna", "n", "todo bien", "adios", "eso es todo", "no gracias"];
 
@@ -410,31 +593,39 @@ function procesarEntradaUsuario(valor) {
         clearTimeout(timerSeguimiento);
         clearTimeout(timerInactividad);
         
-        // Despedida inmediata con leve retraso natural
-        setTimeout(() => botEscribeMensaje(obtenerDespedidaFinal()), 600);
-        return true; // Es una despedida
+        const despedidaText = obtenerDespedidaFinal();
+        setTimeout(() => {
+          botEscribeMensaje(despedidaText);
+          registrarEnGoogleSheets(valor, despedidaText);
+        }, 600);
+
+        return true;
     }
     
-    // Si no es despedida, limpiamos timers para esperar la nueva respuesta del bot
     clearTimeout(timerSeguimiento);
     clearTimeout(timerInactividad);
     return false; 
 }
 
-/* --- MONITORES DE EVENTOS --- */
 
-// Vigilante de Mensajes del Bot (MutationObserver)
+/* =========================================================
+   6. MONITORES DE EVENTOS
+   ========================================================= */
 const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((node) => {
             if (node.classList && node.classList.contains('bot-message')) {
                 const texto = node.innerText || "";
-                // Evitar que el bot reaccione a sus propias preguntas de seguimiento o despedidas
                 const esSeguimiento = texto.includes("¿Hay algo más");
-                const esDespedida = texto.includes("Gracias por") || texto.includes("gusto ayudarte") || texto.includes("buen día") || texto.includes("buena tarde") || texto.includes("noches");
+                const esDespedida = texto.includes("Gracias por") || texto.includes("gusto ayudarte") || texto.includes("buen día") || texto.includes("buena tarde") || texto.includes("noches") || texto.includes("bendecido dia");
 
                 if (!esSeguimiento && !esDespedida) {
                     activarSeguimientoGlobal();
+
+                    const mensajesUsuario = document.querySelectorAll('.user-message, .message.user');
+                    const ultimaPregunta = mensajesUsuario.length > 0 ? mensajesUsuario[mensajesUsuario.length - 1].innerText : "Consulta";
+
+                    registrarEnGoogleSheets(ultimaPregunta, texto);
                 }
             }
         });
@@ -444,7 +635,6 @@ const observer = new MutationObserver((mutations) => {
 const chatContainer = document.querySelector('.chat-messages');
 if (chatContainer) observer.observe(chatContainer, { childList: true });
 
-// Listeners de Interfaz (Click y Enter)
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.querySelector('.send-btn');
     const input = document.querySelector('.chat-input');
@@ -462,6 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
+
 </body>
 <script>
     const defaultConfig = {
@@ -3838,5 +4029,4 @@ if ("serviceWorker" in navigator) {
 </body>
 
 </html>
-
 
